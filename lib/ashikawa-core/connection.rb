@@ -29,7 +29,7 @@ module Ashikawa
       # @api public
       # @example Create a new Connection
       #  connection = Connection.new "http://localhost:8529"
-      def initialize(api_string)
+      def initialize(api_string="http://localhost:8529")
         @api_string = api_string
         @ip, @port = @api_string.scan(/(\S+):(\d+)/).first
         @port = @port.to_i

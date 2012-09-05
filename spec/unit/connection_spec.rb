@@ -11,6 +11,12 @@ describe Ashikawa::Core::Connection do
     connection.port.should == 8529
   end
 
+  it "should default to localhost and ArangoDB port" do
+    connection = subject.new
+    connection.ip.should == "http://localhost"
+    connection.port.should == 8529
+  end
+
   describe "initialized connection" do
     subject { Ashikawa::Core::Connection.new "http://localhost:8529" }
 
