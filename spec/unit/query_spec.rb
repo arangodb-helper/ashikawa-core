@@ -52,7 +52,7 @@ describe Ashikawa::Core::Query do
         collection.should_receive(:send_request).with("simple/first-example", :put =>
           {"collection" => "example_1", "example" => { :hello => "world"}})
 
-        Ashikawa::Core::Document.should_receive(:new)
+        Ashikawa::Core::Cursor.should_receive(:new)
 
         subject.first_example example
       end

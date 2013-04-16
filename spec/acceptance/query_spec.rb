@@ -55,6 +55,12 @@ describe "Queries" do
       result.length.should == 1
     end
 
+    it "should be possible to query first document by example" do
+      subject << { "name" => "Single Document" }
+      result = subject.query.first_example :name => "Single Document"
+      result.length.should == 1
+    end
+
     describe "query by geo coordinates" do
       before :each do
         subject.add_index :geo, :on => [:latitude, :longitude]

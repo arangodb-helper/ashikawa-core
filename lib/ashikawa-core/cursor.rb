@@ -80,8 +80,13 @@ module Ashikawa
       def parse_raw_cursor(raw_cursor)
         @id       = raw_cursor['id']
         @has_more = raw_cursor['hasMore']
-        @length   = raw_cursor['count'].to_i if raw_cursor.has_key?('count')
-        @current  = raw_cursor['result']
+        if raw_cursor['result']
+          @current = raw_cursor['result']
+          @length   = raw_cursor['count'].to_i if raw_cursor.has_key?('count')
+        elsif raw_cursor['document']
+          @current = [raw_cursor['document']]
+          @length   = 1
+        end
         self
       end
 
