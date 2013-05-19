@@ -98,5 +98,18 @@ describe Ashikawa::Core::Cursor do
 
       subject.map{|i| i}[0].should == 1
     end
+
+    it "should return edge objects when recieving data from an edge collection" do
+      @database.stub(:send_request).with("cursor/26011191", :put => {}) do
+        server_response("cursor/edges")
+      end
+      @database.should_receive(:send_request).once
+
+      Ashikawa::Core::Edge.stub(:new).and_return { 1 }
+      Ashikawa::Core::Edge.should_receive(:new).exactly(2).times
+
+      subject.each { |document| }
+    end
+
   end
 end

@@ -1,4 +1,5 @@
 require 'ashikawa-core/document'
+require 'ashikawa-core/edge'
 
 module Ashikawa
   module Core
@@ -54,7 +55,7 @@ module Ashikawa
 
         begin
           @current.each do |raw_document|
-            yield Document.new(@database, raw_document)
+            yield raw_document.has_key?("_from") && raw_document.has_key?("_to") ? Edge.new(@database, raw_document) : Document.new(@database, raw_document)
           end
         end while next_batch
         nil
