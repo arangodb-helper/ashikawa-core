@@ -38,6 +38,20 @@ describe "Basics" do
       subject["volatile_collection"].volatile?.should be_true
     end
 
+    it "should create an autoincrementing collection" do
+      subject.create_collection("autoincrement_collection", :is_volatile => true, :key_options => {
+        :type => :autoincrement,
+        :increment => 10,
+        :allow_user_keys => false
+      })
+      key_options = subject["autoincrement_collection"].key_options
+
+      key_options.type.should == "autoincrement"
+      key_options.offset.should == 0
+      key_options.increment.should == 10
+      key_options.allow_user_keys.should == false
+    end
+
     it "should be possible to create an edge collection" do
       subject.create_collection("edge_collection", :content_type => :edge)
       subject["edge_collection"].content_type.should == :edge
@@ -53,6 +67,10 @@ describe "Basics" do
     it "should be possible to find a collection by ID" do
       my_collection = subject["test_collection"]
       subject[my_collection.id].name.should == "test_collection"
+    end
+
+    it "should be possible to list all system collections" do
+      subject.system_collections.length.should > 0
     end
 
     it "should be possible to load and unload collections" do
@@ -89,8 +107,8 @@ describe "Basics" do
     it "should be possible to get information about the number of documents" do
       empty_collection = subject["empty_collection"]
       empty_collection.length.should == 0
-      empty_collection << { :name => "testname", :age => 27}
-      empty_collection << { :name => "anderer name", :age => 28}
+      empty_collection.create_document({ :name => "testname", :age => 27})
+      empty_collection.create_document({ :name => "anderer name", :age => 28})
       empty_collection.length.should == 2
       empty_collection.truncate!
       empty_collection.length.should == 0
@@ -104,7 +122,7 @@ describe "Basics" do
       document["name"] = "Other Dude"
       document.save
 
-      collection[document_key]["name"].should == "Other Dude"
+      collection.fetch(document_key)["name"].should == "Other Dude"
     end
 
     it "should be possible to access and create documents from a collection" do
@@ -112,10 +130,10 @@ describe "Basics" do
 
       document = collection.create_document(:name => "The Dude", :bowling => true)
       document_key = document.key
-      collection[document_key]["name"].should == "The Dude"
+      collection.fetch(document_key)["name"].should == "The Dude"
 
-      collection[document_key] = { :name => "Other Dude", :bowling => true }
-      collection[document_key]["name"].should == "Other Dude"
+      collection.replace(document_key, { :name => "Other Dude", :bowling => true })
+      collection.fetch(document_key)["name"].should == "Other Dude"
     end
 
     it "should be possible to create an edge between two documents" do
@@ -126,7 +144,7 @@ describe "Basics" do
       b = nodes.create_document({:name => "b"})
       e = edges.create_edge(a, b, {:name => "fance_edge"})
 
-      e = edges[e.key]
+      e = edges.fetch(e.key)
       e.from_id.should == a.id
       e.to_id.should == b.id
     end
@@ -145,22 +163,32 @@ describe "Basics" do
     it "should be possible to manipulate documents and save them" do
       subject["name"] = "Jeffrey Lebowski"
       subject["name"].should == "Jeffrey Lebowski"
-      collection[document_key]["name"].should == "The Dude"
+      collection.fetch(document_key)["name"].should == "The Dude"
       subject.save
-      collection[document_key]["name"].should == "Jeffrey Lebowski"
+      collection.fetch(document_key)["name"].should == "Jeffrey Lebowski"
     end
 
     it "should be possible to delete a document" do
-      collection[document_key].delete
+      collection.fetch(document_key).delete
       expect {
-        collection[document_key]
+        collection.fetch(document_key)
       }.to raise_exception Ashikawa::Core::DocumentNotFoundException
     end
 
     it "should not be possible to delete a document that doesn't exist" do
       expect {
-        collection[123].delete
+        collection.fetch(123).delete
       }.to raise_exception Ashikawa::Core::DocumentNotFoundException
+    end
+
+    it "should be possible to refresh a document" do
+      changed_document = collection.fetch(document_key)
+      changed_document["name"] = "New Name"
+      changed_document.save
+
+      subject["name"].should == "The Dude"
+      subject.refresh!
+      subject["name"].should == "New Name"
     end
   end
 end

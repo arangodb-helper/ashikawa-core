@@ -5,10 +5,11 @@ describe Ashikawa::Core::Database do
   subject { Ashikawa::Core::Database }
 
   before :each do
-    mock(Ashikawa::Core::Connection)
-    mock(Ashikawa::Core::Collection)
-    mock(Ashikawa::Core::Cursor)
-    @connection = double()
+    double(Ashikawa::Core::Connection)
+    double(Ashikawa::Core::Collection)
+    double(Ashikawa::Core::Cursor)
+    double(Ashikawa::Core::Transaction)
+    @connection = double("connection", :host => "localhost", :port => 8529, :scheme => "http")
   end
 
   it "should initialize with a connection" do
@@ -26,13 +27,13 @@ describe Ashikawa::Core::Database do
     Ashikawa::Core::Connection.stub(:new).with("http://localhost:8529", {
       :logger => nil,
       :adapter => nil
-    }).and_return(double())
+    }).and_return(double)
     Ashikawa::Core::Connection.should_receive(:new).with("http://localhost:8529", {
       :logger => nil,
       :adapter => nil
     })
 
-    database = subject.new do |config|
+    subject.new do |config|
       config.url = "http://localhost:8529"
     end
   end
@@ -42,13 +43,13 @@ describe Ashikawa::Core::Database do
     Ashikawa::Core::Connection.stub(:new).with("http://localhost:8529", {
       :logger => logger,
       :adapter => nil
-    }).and_return(double())
+    }).and_return(double)
     Ashikawa::Core::Connection.should_receive(:new).with("http://localhost:8529", {
       :logger => logger,
       :adapter => nil
     })
 
-    database = subject.new do |config|
+    subject.new do |config|
       config.url = "http://localhost:8529"
       config.logger = logger
     end
@@ -59,13 +60,13 @@ describe Ashikawa::Core::Database do
     Ashikawa::Core::Connection.stub(:new).with("http://localhost:8529", {
       :logger => nil,
       :adapter => adapter
-    }).and_return(double())
+    }).and_return(double)
     Ashikawa::Core::Connection.should_receive(:new).with("http://localhost:8529", {
       :logger => nil,
       :adapter => adapter
     })
 
-    database = subject.new do |config|
+    subject.new do |config|
       config.url = "http://localhost:8529"
       config.adapter = adapter
     end
@@ -76,7 +77,7 @@ describe Ashikawa::Core::Database do
     logger = double
 
     expect {
-      database = subject.new do |config|
+      subject.new do |config|
         config.adapter = adapter
         config.logger = logger
       end
@@ -88,7 +89,7 @@ describe Ashikawa::Core::Database do
       config.connection = @connection
     end
 
-    mock Ashikawa::Core::Query
+    double Ashikawa::Core::Query
     Ashikawa::Core::Query.stub(:new)
     Ashikawa::Core::Query.should_receive(:new).exactly(1).times.with(database)
 
@@ -96,7 +97,8 @@ describe Ashikawa::Core::Database do
   end
 
   describe "initialized database" do
-    subject { Ashikawa::Core::Database.new do |config|
+    subject {
+      Ashikawa::Core::Database.new do |config|
         config.connection = @connection
       end
     }
@@ -107,14 +109,24 @@ describe Ashikawa::Core::Database do
       subject.authenticate_with :username => "user", :password => "password"
     end
 
-    it "should fetch all available collections" do
+    it "should fetch all available non-system collections" do
       @connection.stub(:send_request) {|path| server_response("collections/all") }
       @connection.should_receive(:send_request).with("collection")
 
-      Ashikawa::Core::Collection.should_receive(:new).with(subject, server_response("collections/all")["collections"][0])
-      Ashikawa::Core::Collection.should_receive(:new).with(subject, server_response("collections/all")["collections"][1])
+      (0..1).each do |k|
+        Ashikawa::Core::Collection.should_receive(:new).with(subject, server_response("collections/all")["collections"][k])
+      end
 
       subject.collections.length.should == 2
+    end
+
+    it "should fetch all available non-system collections" do
+      @connection.stub(:send_request) {|path| server_response("collections/all") }
+      @connection.should_receive(:send_request).with("collection")
+
+      Ashikawa::Core::Collection.should_receive(:new).exactly(5).times
+
+      subject.system_collections.length.should == 5
     end
 
     it "should create a non volatile collection by default" do
@@ -135,6 +147,26 @@ describe Ashikawa::Core::Database do
       Ashikawa::Core::Collection.should_receive(:new).with(subject, server_response("collections/60768679"))
 
       subject.create_collection("volatile_collection", :is_volatile => true)
+    end
+
+    it "should create an autoincrement collection when asked" do
+      @connection.should_receive(:send_request).with("collection",
+        :post => { :name => "autoincrement_collection", :keyOptions => {
+          :type => "autoincrement",
+          :offset => 0,
+          :increment => 10,
+          :allowUserKeys => false
+        }
+      })
+
+      Ashikawa::Core::Collection.should_receive(:new)
+
+      subject.create_collection("autoincrement_collection", :key_options => {
+        :type => :autoincrement,
+        :offset => 0,
+        :increment => 10,
+        :allow_user_keys => false
+      })
     end
 
     it "should create an edge collection when asked" do
@@ -175,7 +207,7 @@ describe Ashikawa::Core::Database do
         end
       end
       @connection.should_receive(:send_request).with("collection/new_collection")
-      @connection.should_receive(:send_request).with("collection", :post => { :name => "new_collection"} )
+      @connection.should_receive(:send_request).with("collection", :post => { :name => "new_collection"})
 
       Ashikawa::Core::Collection.should_receive(:new).with(subject, server_response("collections/60768679"))
 
@@ -186,6 +218,15 @@ describe Ashikawa::Core::Database do
       @connection.should_receive(:send_request).with("my/path", :post => { :data => "mydata" })
 
       subject.send_request "my/path", :post => { :data => "mydata" }
+    end
+
+    let(:js_function) { double }
+    let(:collections) { double }
+    let(:transaction) { double }
+
+    it "should create a transaction" do
+      Ashikawa::Core::Transaction.should_receive(:new).with(subject, js_function, collections).and_return { transaction }
+      subject.create_transaction(js_function, collections).should == transaction
     end
   end
 end

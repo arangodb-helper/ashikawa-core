@@ -5,14 +5,15 @@ require "ashikawa-core/version"
 Gem::Specification.new do |gem|
   gem.name        = "ashikawa-core"
   gem.version     = Ashikawa::Core::VERSION
-  gem.authors     = ["moonglum", "EinLama"]
-  gem.email       = ["me@moonglum.net", "tobias.eilert@me.com"]
+  gem.authors     = ["moonglum"]
+  gem.email       = ["me@moonglum.net"]
   gem.homepage    = "http://triagens.github.com/ashikawa-core"
   gem.summary     = "Ashikawa Core is a wrapper around the ArangoDB REST API"
   gem.description = "Ashikawa Core is a wrapper around the ArangoDB REST API. It provides low level access and will be used in different ArangoDB ODMs and other tools."
+  gem.license = "Apache License 2.0"
 
-  gem.required_ruby_version = '>= 1.8.7'
-  gem.requirements << "ArangoDB, v1.2"
+  gem.required_ruby_version = '>= 1.9.2'
+  gem.requirements << "ArangoDB, v1.3"
 
   gem.rubyforge_project = "ashikawa-core"
 
@@ -22,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency "faraday", "~> 0.8.6"
-  gem.add_dependency "multi_json", "~> 1.7.2"
+  gem.add_dependency "json", "~> 1.8.0"
   gem.add_dependency "null_logger", "~> 0.0.1"
-  gem.add_dependency "backports", [ '~> 3.0', '>= 3.0.3' ]
+  gem.add_dependency "equalizer", "~> 0.0.5"
 end

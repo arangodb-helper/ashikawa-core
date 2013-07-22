@@ -2,6 +2,7 @@ require "forwardable"
 require "faraday"
 require "null_logger"
 require "uri"
+require "equalizer"
 require "ashikawa-core/request_preprocessor"
 require "ashikawa-core/response_preprocessor"
 
@@ -10,6 +11,8 @@ module Ashikawa
     # A Connection via HTTP to a certain host
     class Connection
       extend Forwardable
+
+      include Equalizer.new(:host, :scheme, :port)
 
       # The host part of the connection
       #
@@ -55,7 +58,7 @@ module Ashikawa
         @connection = Faraday.new("#{api_string}/_api") do |connection|
           connection.request  :ashikawa_request,  logger
           connection.response :ashikawa_response, logger
-          connection.adapter *adapter
+          connection.adapter(*adapter)
         end
       end
 
@@ -113,7 +116,7 @@ module Ashikawa
       # @return [Symbol] The HTTP verb used
       # @api private
       def http_verb(params)
-        [:post, :put, :delete].find { |method_name|
+        [:post, :put, :delete].detect { |method_name|
           params.has_key?(method_name)
         } || :get
       end

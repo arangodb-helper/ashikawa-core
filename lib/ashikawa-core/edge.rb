@@ -1,9 +1,12 @@
 require 'ashikawa-core/document'
+require 'equalizer'
 
 module Ashikawa
   module Core
     # A certain Edge within a certain Collection
     class Edge < Document
+      include Equalizer.new(:id, :revision, :from_id, :to_id)
+
       # The ID of the 'from' document
       #
       # @return [String]

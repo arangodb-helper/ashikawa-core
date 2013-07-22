@@ -1,32 +1,92 @@
 {
-	"collections": [
-		{
-			"name": "example_1",
-			"waitForSync": true,
-			"id": "60768679",
-			"status": 3
-		},
-		{
-			"name": "example_2",
-			"waitForSync": true,
-			"id": "60768669",
-			"status": 3
-		}
-	],
-	"code": 200,
-	"error": false,
-	"names":{
-		"example_1": {
-			"name": "example_1",
-			"waitForSync": true,
-			"id": "60768679",
-			"status": 3
-		},
-		"example_2": {
-			"name": "example_2",
-			"waitForSync": true,
-			"id": "60768669",
-			"status": 3
-		}
-	}
+  "collections": [
+    {
+      "name": "example_1",
+      "waitForSync": true,
+      "id": "60768679",
+      "status": 3
+    },
+    {
+      "name": "example_2",
+      "waitForSync": true,
+      "id": "60768669",
+      "status": 3
+    },
+    {
+      "id": "2703783",
+      "name": "_modules",
+      "status": 2,
+      "type": 2
+    },
+    {
+      "id": "7618983",
+      "name": "_aqlfunctions",
+      "status":2,
+      "type":2
+    },
+    {
+      "id": "10699175",
+      "name": "_trx",
+      "status": 2,
+      "type": 2
+    },
+    {
+      "id": "3490215",
+      "name": "_routing",
+      "status": 3,
+      "type": 2
+    },
+    {
+      "id": "1655207",
+      "name": "_graphs",
+      "status": 2,
+      "type": 2
+    }
+  ],
+  "code": 200,
+  "error": false,
+  "names": {
+    "example_1": {
+      "name": "example_1",
+      "waitForSync": true,
+      "id": "60768679",
+      "status": 3
+    },
+    "example_2": {
+      "name": "example_2",
+      "waitForSync": true,
+      "id": "60768669",
+      "status": 3
+    },
+    "_modules": {
+      "id": "2703783",
+      "name": "_modules",
+      "status": 2,
+      "type": 2
+    },
+    "_aqlfunctions": {
+      "id": "7618983",
+      "name": "_aqlfunctions",
+      "status": 2,
+      "type": 2
+    },
+    "_trx":{
+      "id": "10699175",
+      "name": "_trx",
+      "status": 2,
+      "type": 2
+    },
+    "_routing":{
+      "id": "3490215",
+      "name": "_routing",
+      "status": 3,
+      "type": 2
+    },
+    "_graphs":{
+      "id": "1655207",
+      "name": "_graphs",
+      "status": 2,
+      "type": 2
+    }
+  }
 }

@@ -1,7 +1,11 @@
+require 'equalizer'
+
 module Ashikawa
   module Core
     # An index on a certain collection
     class Index
+      include Equalizer.new(:id, :on, :type, :unique)
+
       # The fields the index is defined on as symbols
       #
       # @return [Array<Symbol>]

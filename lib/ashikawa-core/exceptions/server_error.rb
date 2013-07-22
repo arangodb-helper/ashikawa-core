@@ -7,8 +7,8 @@ module Ashikawa
       # @param [Integer] status
       # @return RuntimeError
       # @api private
-      def initialize(status)
-        @status = status
+      def initialize(description)
+        @description = description
       end
 
       # String representation of the exception
@@ -16,7 +16,7 @@ module Ashikawa
       # @return String
       # @api private
       def to_s
-        "Status #{@status}: An Error occured on the server"
+        @description
       end
     end
   end

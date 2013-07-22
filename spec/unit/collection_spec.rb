@@ -5,7 +5,7 @@ describe Ashikawa::Core::Collection do
   subject { Ashikawa::Core::Collection }
 
   before :each do
-    @database = double()
+    @database = double
   end
 
   it "should have a name" do
@@ -21,7 +21,7 @@ describe Ashikawa::Core::Collection do
   it "should create a query" do
     collection = subject.new @database, server_response("collections/60768679")
 
-    mock Ashikawa::Core::Query
+    double Ashikawa::Core::Query
     Ashikawa::Core::Query.stub(:new)
     Ashikawa::Core::Query.should_receive(:new).exactly(1).times.with(collection)
 
@@ -75,7 +75,7 @@ describe Ashikawa::Core::Collection do
       @database.stub(:send_request).with("collection/60768679/figures", {}).and_return { server_response("collections/60768679-figures") }
       @database.should_receive(:send_request).with("collection/60768679/figures", {}).at_least(1).times
 
-      mock Ashikawa::Core::Figure
+      double Ashikawa::Core::Figure
       Ashikawa::Core::Figure.stub(:new)
       Ashikawa::Core::Figure.should_receive(:new).exactly(1).times.with(server_response("collections/60768679-figures")["figures"])
 
@@ -122,6 +122,16 @@ describe Ashikawa::Core::Collection do
       subject.wait_for_sync = true
     end
 
+    it "should check for the key options" do
+      raw_key_options = double
+      @database.should_receive(:send_request).with("collection/60768679/properties", {}).and_return { { "keyOptions" => raw_key_options } }
+
+      key_options = double
+      Ashikawa::Core::KeyOptions.stub(:new).with(raw_key_options).and_return { key_options }
+
+      subject.key_options.should == key_options
+    end
+
     it "should change its name" do
       @database.stub(:send_request).with("collection/60768679/rename", :put => {"name" => "my_new_name"})
       @database.should_receive(:send_request).with("collection/60768679/rename", :put => {"name" => "my_new_name"})
@@ -130,7 +140,17 @@ describe Ashikawa::Core::Collection do
     end
 
     describe "add and get single documents" do
-      it "should receive a document by ID" do
+      it "should receive a document by ID via fetch" do
+        @database.stub(:send_request).with("document/60768679/333", {}).and_return { server_response('documents/example_1-137249191') }
+        @database.should_receive(:send_request).with("document/60768679/333", {})
+
+        # Documents need to get initialized:
+        Ashikawa::Core::Document.should_receive(:new)
+
+        subject.fetch(333)
+      end
+
+      it "should receive a document by ID via []" do
         @database.stub(:send_request).with("document/60768679/333", {}).and_return { server_response('documents/example_1-137249191') }
         @database.should_receive(:send_request).with("document/60768679/333", {})
 
@@ -140,35 +160,70 @@ describe Ashikawa::Core::Collection do
         subject[333]
       end
 
+      it "should throw an exception when the document was not found during a fetch" do
+        @database.stub(:send_request).and_return {
+          raise Ashikawa::Core::DocumentNotFoundException
+        }
+
+        expect {
+          subject.fetch(123)
+        }.to raise_exception Ashikawa::Core::DocumentNotFoundException
+      end
+
+      it "should return nil when the document was not found when using []" do
+        @database.stub(:send_request).and_return {
+          raise Ashikawa::Core::DocumentNotFoundException
+        }
+
+        subject[123].should == nil
+      end
+
       it "should replace a document by ID" do
         @database.stub(:send_request).with("document/60768679/333", :put => {"name" => "The Dude"})
         @database.should_receive(:send_request).with("document/60768679/333", :put => {"name" => "The Dude"})
 
-        subject[333] = {"name" => "The Dude"}
+        subject.replace(333, {"name" => "The Dude"})
       end
 
       it "should create a new document" do
         @database.stub(:send_request).with("document?collection=60768679", :post => { "name" => "The Dude" }).and_return do
           server_response('documents/new-example_1-137249191')
         end
-        @database.stub(:send_request).with("document/60768679/333", :post => { "name" => "The Dude" }).and_return { server_response('documents/example_1-137249191') }
+        @database.stub(:send_request).with("document/60768679/333", :post => {
+          "name" => "The Dude"
+        }).and_return {
+          {
+            "_id" => "example_1/137249191",
+            "_rev" => "137249191",
+            "_key" => "137249191"
+          }
+        }
+        @database.stub(:send_request).with("document/60768679/333", {}).and_return { server_response('documents/example_1-137249191') }
 
         # Documents need to get initialized:
-        Ashikawa::Core::Document.should_receive(:new)
+        Ashikawa::Core::Document.should_receive(:new).and_return {
+          document = double
+          document.should_receive(:refresh!)
+          document
+        }
 
         subject.create_document({"name" => "The Dude"})
       end
 
-      it "should create a new document with `<<`" do
+      it "should create a new document" do
         @database.stub(:send_request).with("document?collection=60768679", :post => { "name" => "The Dude" }).and_return do
           server_response('documents/example_1-137249191')
         end
         @database.stub(:send_request).with("document/60768679/333").and_return { server_response('documents/example_1-137249191') }
 
         # Documents need to get initialized:
-        Ashikawa::Core::Document.should_receive(:new)
+        Ashikawa::Core::Document.should_receive(:new).and_return {
+          document = double
+          document.should_receive(:refresh!)
+          document
+        }
 
-        subject << {"name" => "The Dude"}
+        subject.create_document("name" => "The Dude")
       end
 
       it "should not create a new document" do
@@ -227,14 +282,14 @@ describe Ashikawa::Core::Collection do
       # Documents need to get initialized:
       Ashikawa::Core::Edge.should_receive(:new)
 
-      subject[333]
+      subject.fetch(333)
     end
 
     it "should replace an edge by ID" do
       @database.stub(:send_request).with("edge/60768679/333", :put => {"name" => "The Dude"})
       @database.should_receive(:send_request).with("edge/60768679/333", :put => {"name" => "The Dude"})
 
-      subject[333] = {"name" => "The Dude"}
+      subject.replace(333, {"name" => "The Dude"})
     end
 
     it "should create a new edge" do
@@ -248,7 +303,11 @@ describe Ashikawa::Core::Collection do
       to_double.stub(:id => "2")
 
       # Documents need to get initialized:
-      Ashikawa::Core::Edge.should_receive(:new)
+      Ashikawa::Core::Edge.should_receive(:new).and_return {
+        document = double
+        document.should_receive(:refresh!)
+        document
+      }
 
       subject.create_edge(from_double, to_double, {"name" => "The Dude"})
     end
@@ -257,6 +316,23 @@ describe Ashikawa::Core::Collection do
       expect {
         subject.create_document({"quote" => "D'ya have to use s'many cuss words?"})
       }.to raise_exception(RuntimeError, "Can't create a document in an edge collection")
+    end
+  end
+
+  describe "Deprecated methods" do
+    subject { Ashikawa::Core::Collection.new @database, { "id" => "60768679", "name" => "example_1" } }
+    let(:attributes) { { "test" => 123 } }
+
+    it "should mark `<<` as deprecated" do
+      subject.should_receive(:create_document).with(attributes).and_return nil
+      subject.should_receive(:warn).with("`<<` is deprecated, please use `create_document`")
+      subject << attributes
+    end
+
+    it "should mark `[]=` as deprecated" do
+      subject.should_receive(:replace).with(121, attributes).and_return nil
+      subject.should_receive(:warn).with("`[]=` is deprecated, please use `replace`")
+      subject[121] = attributes
     end
   end
 end

@@ -1,5 +1,5 @@
 require "faraday"
-require "multi_json"
+require "json"
 
 module Ashikawa
   module Core
@@ -23,7 +23,7 @@ module Ashikawa
       # @api private
       def call(env)
         body = env[:body]
-        env[:body] = MultiJson.dump(body) if body
+        env[:body] = JSON.generate(body) if body
         log(env[:method], env[:url], body)
         @app.call(env)
       end

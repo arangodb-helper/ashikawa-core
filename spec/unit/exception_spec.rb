@@ -15,8 +15,9 @@ describe Ashikawa::Core::NoCollectionProvidedException do
 end
 
 describe Ashikawa::Core::ClientError do
+  let(:error_message) { "error message" }
   it "should have a good explanation" do
-    Ashikawa::Core::ClientError.new(411).to_s.should include "client"
+    Ashikawa::Core::ClientError.new(error_message).to_s.should == error_message
   end
 end
 
@@ -51,8 +52,9 @@ describe Ashikawa::Core::IndexNotFoundException do
 end
 
 describe Ashikawa::Core::ServerError do
+  let(:error_message) { "error message" }
   it "should have a good explanation" do
-    Ashikawa::Core::ServerError.new(511).to_s.should include "server"
+    Ashikawa::Core::ServerError.new(error_message).to_s.should == error_message
   end
 end
 

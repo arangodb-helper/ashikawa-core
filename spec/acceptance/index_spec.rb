@@ -1,7 +1,8 @@
 require 'acceptance/spec_helper'
 
 describe "Indices" do
-  let(:database) { Ashikawa::Core::Database.new do |config|
+  let(:database) {
+    Ashikawa::Core::Database.new do |config|
       config.url = ARANGO_HOST
     end
   }

@@ -1,9 +1,12 @@
 require 'ashikawa-core/exceptions/client_error/resource_not_found/document_not_found'
+require 'equalizer'
 
 module Ashikawa
   module Core
     # A certain Document within a certain Collection
     class Document
+      include Equalizer.new(:id, :revision)
+
       # The ID of the document (this includes the Collection prefix)
       #
       # @return [String]
@@ -52,7 +55,7 @@ module Ashikawa
       #   document = Ashikawa::Core::Document.new(database, raw_document)
       #   document.check_if_persisted!
       def check_if_persisted!
-        raise DocumentNotFoundException if @id.nil?
+        raise DocumentNotFoundException if @id == :not_persisted
       end
 
       # Get the value of an attribute of the document
@@ -99,9 +102,22 @@ module Ashikawa
       # @api public
       # @example Get the hash representation of a document
       #   document = Ashikawa::Core::Document.new(database, raw_document)
+      #   document.hash #=> { :name => "Lebowski", :occupation => "Not occupied" }
+      def hash
+        @content
+      end
+
+      # Convert the document into a hash
+      #
+      # @return [Hash]
+      # @api public
+      # @deprecated Use {#hash} instead.
+      # @example Get the hash representation of a document
+      #   document = Ashikawa::Core::Document.new(database, raw_document)
       #   document.to_hash #=> { :name => "Lebowski", :occupation => "Not occupied" }
       def to_hash
-        @content
+        warn "`to_hash` is deprecated, please use `hash`"
+        hash
       end
 
       # Save the changes to the database
@@ -112,9 +128,20 @@ module Ashikawa
       #   document = Ashikawa::Core::Document.new(database, raw_document)
       #   document['occupation'] = 'Not occupied'
       #   document.save
-      def save()
+      def save
         check_if_persisted!
         send_request_for_document(:put => @content)
+      end
+
+      # Get a fresh version of this document from the database
+      #
+      # @return self
+      # @api public
+      # @example Refresh the document
+      #   document = Ashikawa::Core::Document.new(database, raw_document)
+      #   document.refresh!
+      def refresh!
+        parse_raw_document(send_request_for_document)
       end
 
       protected
@@ -125,9 +152,9 @@ module Ashikawa
       # @return self
       # @api private
       def parse_raw_document(raw_document)
-        @id       = raw_document['_id']
+        @id       = raw_document['_id'] || :not_persisted
         @key      = raw_document['_key']
-        @revision = raw_document['_rev']
+        @revision = raw_document['_rev'] || :not_persisted
         @content  = raw_document.delete_if { |key, value| key.start_with?("_") }
         self
       end

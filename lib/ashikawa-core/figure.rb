@@ -9,11 +9,12 @@ module Ashikawa
       # @example Create a new figure from a raw figure
       #   figure = Ashikawa::Core::Figure.new(raw_figure)
       def initialize(raw_figure)
-        @datafiles = raw_figure["datafiles"]
-        @alive     = raw_figure["alive"]
-        @dead      = raw_figure["dead"]
-        @shapes    = raw_figure["shapes"]
-        @journals  = raw_figure["journals"]
+        @datafiles  = raw_figure["datafiles"]
+        @alive      = raw_figure["alive"]
+        @dead       = raw_figure["dead"]
+        @shapes     = raw_figure["shapes"]
+        @journals   = raw_figure["journals"]
+        @attributes = raw_figure["attributes"]
       end
 
       # The number of active datafiles
@@ -124,6 +125,17 @@ module Ashikawa
       #   figure.journal_size #=> 1337
       def journals_file_size
         @journals["fileSize"]
+      end
+
+      # Number of different attributes that are or have been used in the collection
+      #
+      # @return Fixnum
+      # @api public
+      # @example Get the number of attributes
+      #   figure = Ashikawa::Core::Figure.new(raw_figure)
+      #   figure.attributes_count #=> 12
+      def attributes_count
+        @attributes["count"]
       end
     end
   end

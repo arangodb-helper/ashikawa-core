@@ -2,7 +2,7 @@ require 'unit/spec_helper'
 require 'ashikawa-core/index'
 
 describe Ashikawa::Core::Index do
-  let(:collection) { double() }
+  let(:collection) { double }
   let(:raw_data) {
     {
       "code" => 201,

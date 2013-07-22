@@ -5,13 +5,17 @@ require "ashikawa-core/cursor"
 require "ashikawa-core/query"
 require "ashikawa-core/status"
 require "ashikawa-core/figure"
+require "ashikawa-core/key_options"
 require "forwardable"
+require "equalizer"
 
 module Ashikawa
   module Core
     # A certain Collection within the Database
     class Collection
       extend Forwardable
+
+      include Equalizer.new(:id, :name, :content_type, :database)
 
       CONTENT_TYPES = {
         2 => :document,
@@ -205,6 +209,17 @@ module Ashikawa
         send_information_to_server(:properties, :waitForSync, new_value)
       end
 
+      # Get information about the type of keys of this collection
+      #
+      # @return [KeyOptions]
+      # @api public
+      # @example Check if this collection has autoincrementing keys
+      #   collection = Ashikawa::Core::Collection.new(database, raw_collection)
+      #   collection.key_options.type # => "autoincrement"
+      def key_options
+        KeyOptions.new(get_information_from_server(:properties, :keyOptions))
+      end
+
       # Returns the number of documents in the collection
       #
       # @return [Fixnum] Number of documents
@@ -326,29 +341,56 @@ module Ashikawa
         send_command_to_server(:truncate)
       end
 
-      # Fetch a certain document by its ID
+      # Fetch a certain document by its key
       #
-      # @param [Integer] document_id the id of the document
+      # @param [Integer] document_key the key of the document
       # @raise [DocumentNotFoundException] If the requested document was not found
       # @return Document
       # @api public
-      # @example Fetch the document with the ID 12345
-      #   document = collection[12345]
-      def [](document_id)
-        response = send_request_for_content_id(document_id)
+      # @example Fetch the document with the key 12345
+      #   document = collection.fetch(12345)
+      def fetch(document_key)
+        response = send_request_for_content_key(document_key)
         @content_class.new(@database, response)
       end
 
-      # Replace a document by its ID
+      # Fetch a certain document by its key, return nil if the document does not exist
       #
-      # @param [Integer] document_id the id of the document
+      # @param [Integer] document_key the id of the document
+      # @return Document
+      # @api public
+      # @example Fetch the document with the key 12345
+      #   document = collection[12345]
+      def [](document_key)
+        fetch(document_key)
+      rescue DocumentNotFoundException
+        nil
+      end
+
+      # Replace a document by its key
+      #
+      # @param [Integer] document_key the key of the document
       # @param [Hash] raw_document the data you want to replace it with
       # @return [Hash] parsed JSON response from the server
       # @api public
-      # @example Replace the document with the ID 12345
-      #   collection[12345] = document
-      def []=(document_id, raw_document)
-        send_request_for_content_id(document_id, :put => raw_document)
+      # @example Replace the document with the key 12345
+      #   collection.replace(12345, document)
+      def replace(document_key, raw_document)
+        send_request_for_content_key(document_key, :put => raw_document)
+      end
+
+      # Replace a document by its key
+      #
+      # @param [Integer] document_key the key of the document
+      # @param [Hash] raw_document the data you want to replace it with
+      # @return [Hash] parsed JSON response from the server
+      # @api public
+      # @deprecated Use {#replace} instead.
+      # @example Replace the document with the key 12345
+      #   collection.replace(12345, document)
+      def []=(document_key, raw_document)
+        warn "`[]=` is deprecated, please use `replace`"
+        replace(document_key, raw_document)
       end
 
       # Create a new document with given attributes
@@ -361,10 +403,21 @@ module Ashikawa
       def create_document(attributes)
         raise "Can't create a document in an edge collection" if @content_type == :edge
         response = send_request_for_content(:post => attributes)
-        Document.new(@database, response)
+        Document.new(@database, response).refresh!
       end
 
-      alias :<< :create_document
+      # Create a new document with given attributes
+      #
+      # @param [Hash] attributes
+      # @return [Document] The created document
+      # @api public
+      # @deprecated Use {#create_document} instead.
+      # @example Create a new document from raw data
+      #   collection << attributes
+      def <<(attributes)
+        warn "`<<` is deprecated, please use `create_document`"
+        create_document(attributes)
+      end
 
       # Create a new edge between two documents with certain attributes
       #
@@ -378,7 +431,7 @@ module Ashikawa
       def create_edge(from, to, attributes)
         raise "Can't create an edge in a document collection" if @content_type == :document
         response = send_request("edge?collection=#{@id}&from=#{from.id}&to=#{to.id}", :post => attributes)
-        Edge.new(@database, response)
+        Edge.new(@database, response).refresh!
       end
 
       # Add an index to the collection
@@ -408,8 +461,8 @@ module Ashikawa
       #   people = database['people']
       #   people.index(1244) #=> #<Index: id=1244...>
       def index(id)
-        server_response = send_request("index/#{@name}/#{id}")
-        Index.new(self, server_response)
+        response = send_request("index/#{@name}/#{id}")
+        Index.new(self, response)
       end
 
       # Get all indices
@@ -486,7 +539,7 @@ module Ashikawa
       #
       # @return [String] Response from the server
       # @api private
-      def send_request_for_this_collection(path, method={})
+      def send_request_for_this_collection(path, method = {})
         send_request("collection/#{id}/#{path}", method)
       end
 
@@ -503,14 +556,14 @@ module Ashikawa
         self
       end
 
-      # Send a request for the content with the given id
+      # Send a request for the content with the given key
       #
       # @param [Integer] document_id The id of the document
       # @param [Hash] opts The options for the request
       # @return [Hash] parsed JSON response from the server
       # @api private
-      def send_request_for_content_id(document_id, opts = {})
-        send_request("#{@content_type}/#{@id}/#{document_id}", opts)
+      def send_request_for_content_key(document_key, opts = {})
+        send_request("#{@content_type}/#{@id}/#{document_key}", opts)
       end
 
       # Send a request for the content of this collection
