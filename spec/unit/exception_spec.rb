@@ -10,57 +10,41 @@ require "ashikawa-core/exceptions/server_error"
 require "ashikawa-core/exceptions/server_error/json_error"
 
 describe Ashikawa::Core::NoCollectionProvidedException do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "without a collection"
-  end
+  its(:to_s) { should include "without a collection" }
 end
 
 describe Ashikawa::Core::ClientError do
-  let(:error_message) { "error message" }
-  it "should have a good explanation" do
-    expect(Ashikawa::Core::ClientError.new(error_message).to_s).to eq(error_message)
-  end
+  let(:error_message) { double }
+  subject { Ashikawa::Core::ClientError.new(error_message) }
+  its(:to_s) { should be(error_message) }
 end
 
 describe Ashikawa::Core::BadSyntax do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "syntax"
-  end
+  its(:to_s) { should include "syntax" }
 end
 
 describe Ashikawa::Core::ResourceNotFound do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "was not found"
-  end
+  its(:to_s) { should include "was not found" }
 end
 
 describe Ashikawa::Core::DocumentNotFoundException do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "does not exist"
-  end
+  its(:to_s) { should include "does not exist" }
 end
 
 describe Ashikawa::Core::CollectionNotFoundException do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "does not exist"
-  end
+  its(:to_s) { should include "does not exist" }
 end
 
 describe Ashikawa::Core::IndexNotFoundException do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "does not exist"
-  end
+  its(:to_s) { should include "does not exist" }
 end
 
 describe Ashikawa::Core::ServerError do
-  let(:error_message) { "error message" }
-  it "should have a good explanation" do
-    expect(Ashikawa::Core::ServerError.new(error_message).to_s).to eq(error_message)
-  end
+  let(:error_message) { double }
+  subject { Ashikawa::Core::ServerError.new(error_message) }
+  its(:to_s) { should be(error_message) }
 end
 
 describe Ashikawa::Core::JsonError do
-  it "should have a good explanation" do
-    expect(subject.to_s).to include "JSON from the server"
-  end
+  its(:to_s) { should include "JSON from the server" }
 end

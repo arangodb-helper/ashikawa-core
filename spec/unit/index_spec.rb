@@ -4,35 +4,37 @@ require 'ashikawa-core/index'
 
 describe Ashikawa::Core::Index do
   let(:collection) { double }
+  let(:id) { "167137465/168054969" }
+  let(:path) { "index/167137465/168054969" }
+  let(:delete_payload) {{ delete: {} }}
+  let(:type_as_sym) { double }
+  let(:type) { double(to_sym: type_as_sym) }
+  let(:field_as_sym) { double }
+  let(:field) { double(to_sym: field_as_sym) }
+  let(:unique) { double }
   let(:raw_data) {
     {
       "code" => 201,
-      "fields" => [
-        "something"
-      ],
-      "id" => "167137465/168054969",
-      "type" => "hash",
+      "fields" => [ field ],
+      "id" => id,
+      "type" => type,
       "isNewlyCreated" => true,
-      "unique" => true,
+      "unique" => unique,
       "error" => false
     }
   }
-  subject { Ashikawa::Core::Index }
-
-  it "should initialize an Index" do
-    index = subject.new collection, raw_data
-    expect(index.id).to eq("167137465/168054969")
-    expect(index.type).to eq(:hash)
-    expect(index.on).to eq([:something])
-    expect(index.unique).to eq(true)
-  end
 
   describe "initialized index" do
-    subject { Ashikawa::Core::Index.new collection, raw_data }
+    subject { Ashikawa::Core::Index.new(collection, raw_data) }
+
+    its(:id) { should be(id) }
+    its(:type) { should be(type_as_sym) }
+    its(:on) { should include(field_as_sym) }
+    its(:unique) { should be(unique) }
 
     it "should be deletable" do
-      expect(collection).to receive(:send_request).with("index/167137465/168054969",
-        delete: {})
+      expect(collection).to receive(:send_request)
+        .with(path, delete_payload)
 
       subject.delete
     end

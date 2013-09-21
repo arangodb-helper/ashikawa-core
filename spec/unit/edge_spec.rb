@@ -4,61 +4,59 @@ require 'ashikawa-core/edge'
 
 describe Ashikawa::Core::Edge do
   let(:database) { double }
-  let(:raw_data) {
-    {
-      "_id" => "1234567/2345678",
-      "_key" => "2345678",
-      "_rev" => "3456789",
-      "_from" => "7848004/9289796",
-      "_to" => "7848004/9355332",
-      "first_name" => "The",
-      "last_name" => "Dude"
-    }
-  }
-  let(:additional_data) {
-    {
-      more_info: "this is important"
-    }
-  }
-
-  describe "initializing" do
-    subject { Ashikawa::Core::Edge }
-
-    it "should initialize data" do
-      document = subject.new(database, raw_data, additional_data)
-      expect(document.id).to eq("1234567/2345678")
-      expect(document.key).to eq("2345678")
-      expect(document.revision).to eq("3456789")
-      expect(document["more_info"]).to eq(additional_data[:more_info])
-    end
-  end
+  let(:id) { 412 }
+  let(:path) { "edge/412" }
+  let(:key) { double }
+  let(:revision) { double }
+  let(:from_id) { double }
+  let(:to_id) { double }
+  let(:first_name) { double }
+  let(:last_name) { double }
+  let(:raw_data) {{
+    "_id" => id,
+    "_key" => key,
+    "_rev" => revision,
+    "_from" => from_id,
+    "_to" => to_id,
+    "first_name" => first_name,
+    "last_name" => last_name
+  }}
+  let(:new_last_name) { double }
+  let(:raw_data_without_meta_data_and_new_last_name) {{
+    "first_name" => first_name,
+    "last_name" => new_last_name
+  }}
 
   describe "initialized edge" do
-    subject { Ashikawa::Core::Edge.new(database, raw_data)}
+    subject { Ashikawa::Core::Edge.new(database, raw_data) }
+
+    its(:id) { should be(id) }
+    its(:key) { should be(key) }
+    its(:revision) { should be(revision) }
+    its(:from_id) { should eq(from_id) }
+    its(:to_id) { should eq(to_id) }
 
     it "should be deletable" do
-      expect(database).to receive(:send_request).with("edge/#{raw_data['_id']}",
-        { delete: {} }
-      )
+      expect(database).to receive(:send_request)
+        .with(path, { delete: {} })
 
       subject.delete
     end
 
     it "should store changes to the database" do
-      expect(database).to receive(:send_request).with("edge/#{raw_data['_id']}",
-        { put: { "first_name" => "The", "last_name" => "Other" } }
-      )
+      expect(database).to receive(:send_request)
+        .with(path, { put: raw_data_without_meta_data_and_new_last_name })
 
-      subject["last_name"] = "Other"
+      subject["last_name"] = new_last_name
       subject.save
     end
+  end
 
-    it "should know the ID of the 'from' document" do
-      expect(subject.from_id).to eq("7848004/9289796")
-    end
+  describe "initializing edge with additional data" do
+    let(:more_info) { double }
+    let(:additional_data) {{ more_info: more_info }}
+    subject { Ashikawa::Core::Edge.new(database, raw_data, additional_data) }
 
-    it "should know the ID of the 'to' document" do
-      expect(subject.to_id).to eq("7848004/9355332")
-    end
+    its(["more_info"]) { should eq(more_info) }
   end
 end

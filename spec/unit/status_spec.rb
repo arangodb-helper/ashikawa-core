@@ -3,50 +3,49 @@ require "ashikawa-core/status"
 
 describe Ashikawa::Core::Status do
   subject { Ashikawa::Core::Status }
-  let(:status_codes) { (1..6).to_a }
 
-  it "should know if the collection is new born" do
-    status = subject.new 1
-    expect(status.new_born?).to eq(true)
-
-    (status_codes - [1]).each do |status_code|
-      status = subject.new status_code
-      expect(status.new_born?).to eq(false)
-    end
+  describe "a new born collection" do
+    subject { Ashikawa::Core::Status.new(1) }
+    its(:new_born?) { should be_true }
+    its(:unloaded?) { should be_false }
+    its(:loaded?) { should be_false }
+    its(:being_unloaded?) { should be_false }
+    its(:corrupted?) { should be_false }
   end
 
-  it "should know if the collection is unloaded" do
-    status = subject.new 2
-    expect(status.unloaded?).to eq(true)
-
-    (status_codes - [2]).each do |status_code|
-      status = subject.new status_code
-      expect(status.unloaded?).to eq(false)
-    end
+  describe "an unloaded collection" do
+    subject { Ashikawa::Core::Status.new(2) }
+    its(:new_born?) { should be_false }
+    its(:unloaded?) { should be_true }
+    its(:loaded?) { should be_false }
+    its(:being_unloaded?) { should be_false }
+    its(:corrupted?) { should be_false }
   end
 
-  it "should know if the collection is loaded" do
-    status = subject.new 3
-    expect(status.loaded?).to eq(true)
-
-    (status_codes - [3]).each do |status_code|
-      status = subject.new status_code
-      expect(status.loaded?).to eq(false)
-    end
+  describe "a loaded collection" do
+    subject { Ashikawa::Core::Status.new(3) }
+    its(:new_born?) { should be_false }
+    its(:unloaded?) { should be_false }
+    its(:loaded?) { should be_true }
+    its(:being_unloaded?) { should be_false }
+    its(:corrupted?) { should be_false }
   end
 
-  it "should know if the collection is being unloaded" do
-    status = subject.new 4
-    expect(status.being_unloaded?).to eq(true)
-
-    (status_codes - [4]).each do |status_code|
-      status = subject.new status_code
-      expect(status.being_unloaded?).to eq(false)
-    end
+  describe "a collection being unloaded" do
+    subject { Ashikawa::Core::Status.new(4) }
+    its(:new_born?) { should be_false }
+    its(:unloaded?) { should be_false }
+    its(:loaded?) { should be_false }
+    its(:being_unloaded?) { should be_true }
+    its(:corrupted?) { should be_false }
   end
 
-  it "should know if the collection is corrupted" do
-    status = subject.new 6
-    expect(status.corrupted?).to eq(true)
+  describe "a corrupted collection" do
+    subject { Ashikawa::Core::Status.new(6) }
+    its(:new_born?) { should be_false }
+    its(:unloaded?) { should be_false }
+    its(:loaded?) { should be_false }
+    its(:being_unloaded?) { should be_false }
+    its(:corrupted?) { should be_true }
   end
 end

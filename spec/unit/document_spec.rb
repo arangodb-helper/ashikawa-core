@@ -4,84 +4,82 @@ require 'ashikawa-core/document'
 
 describe Ashikawa::Core::Document do
   let(:database) { double }
-  let(:raw_data) {
-    {
-      "_id" => "1234567/2345678",
-      "_key" => "2345678",
-      "_rev" => "3456789",
-      "first_name" => "The",
-      "last_name" => "Dude"
-    }
-  }
-  let(:raw_data_without_id) {
-    {
-      "first_name" => "The",
-      "last_name" => "Dude"
-    }
-  }
-  let(:additional_data) {
-    {
-      more_info: "this is important"
-    }
-  }
-  subject { Ashikawa::Core::Document }
+  let(:id) { 164 }
+  let(:path) { "document/164" }
+  let(:key) { double }
+  let(:revision) { double }
+  let(:first_name) { double }
+  let(:last_name) { double }
+  let(:more_info) { double }
+  let(:delete_payload) {{ delete: {} }}
+  let(:raw_data) {{
+    "_id" => id,
+    "_key" => key,
+    "_rev" => revision,
+    "first_name" => first_name,
+    "last_name" => last_name
+  }}
+  let(:raw_data_without_id) {{
+    "first_name" => first_name,
+    "last_name" => last_name
+  }}
 
   describe "initializing" do
+    subject { Ashikawa::Core::Document }
+
+    let(:additional_data) {{
+      more_info: more_info
+    }}
+
     it "should initialize with data including ID" do
-      document = subject.new database, raw_data
-      expect(document.id).to eq("1234567/2345678")
-      expect(document.key).to eq("2345678")
-      expect(document.revision).to eq("3456789")
+      document = subject.new(database, raw_data)
+      expect(document.id).to eq(id)
+      expect(document.key).to eq(key)
+      expect(document.revision).to eq(revision)
     end
 
     it "should initialize with data not including ID" do
-      document = subject.new database, raw_data_without_id
+      document = subject.new(database, raw_data_without_id)
       expect(document.id).to eq(:not_persisted)
       expect(document.revision).to eq(:not_persisted)
     end
 
     it "should initialize with additional data" do
-      document = subject.new database, raw_data, additional_data
-      expect(document["more_info"]).to eq(additional_data[:more_info])
+      document = subject.new(database, raw_data, additional_data)
+      expect(document["more_info"]).to eq(more_info)
     end
   end
 
   describe "initialized document with ID" do
-    subject { Ashikawa::Core::Document.new database, raw_data }
+    subject { Ashikawa::Core::Document.new(database, raw_data) }
 
-    it "should return the correct value for an existing attribute" do
-      expect(subject["first_name"]).to be(raw_data["first_name"])
-    end
+    let(:new_last_name) { double }
+    let(:raw_data_without_id_and_new_last_name) {{
+      "first_name" => first_name,
+      "last_name" => new_last_name
+    }}
 
-    it "should return nil for an non-existing attribute" do
-      expect(subject["no_name"]).to be_nil
-    end
+    its(["first_name"]) { should be(first_name) }
+    its(["no_name"]) { should be_nil }
+    its(:hash) { should be_instance_of Hash }
+    its(:hash) { should include("first_name" => first_name) }
 
     it "should be deletable" do
-      expect(database).to receive(:send_request).with("document/#{raw_data['_id']}",
-        { delete: {} }
-      )
-
+      expect(database).to receive(:send_request).with(path, delete_payload)
       subject.delete
     end
 
     it "should store changes to the database" do
-      expect(database).to receive(:send_request).with("document/#{raw_data['_id']}",
-        { put: { "first_name" => "The", "last_name" => "Other" } }
+      expect(database).to receive(:send_request).with(path,
+        { put: raw_data_without_id_and_new_last_name }
       )
 
-      subject["last_name"] = "Other"
+      subject["last_name"] = new_last_name
       subject.save
     end
 
-    it "should be convertable to a hash" do
-      hash = subject.hash
-      expect(hash).to be_instance_of Hash
-      expect(hash["first_name"]).to eq(subject["first_name"])
-    end
-
     it "should be refreshable" do
-      expect(database).to receive(:send_request).with("document/#{raw_data['_id']}", {}).and_return {
+      expect(database).to receive(:send_request).with(path, {}).and_return {
         { "name" => "Jeff" }
       }
 
@@ -94,13 +92,8 @@ describe Ashikawa::Core::Document do
   describe "initialized document without ID" do
     subject { Ashikawa::Core::Document.new database, raw_data_without_id }
 
-    it "should return the correct value for an existing attribute" do
-      expect(subject["first_name"]).to be(raw_data_without_id["first_name"])
-    end
-
-    it "should return nil for an non-existing attribute" do
-      expect(subject["no_name"]).to be_nil
-    end
+    its(["first_name"]) { should be(first_name) }
+    its(["no_name"]) { should be_nil }
 
     it "should not be deletable" do
       expect(database).not_to receive :send_request

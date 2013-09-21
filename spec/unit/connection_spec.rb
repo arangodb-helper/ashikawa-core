@@ -7,11 +7,9 @@ describe Ashikawa::Core::Connection do
   let(:response_headers) { {"content-type" => "application/json; charset=utf-8" } }
   subject { Ashikawa::Core::Connection.new(ARANGO_HOST, adapter: [:test, request_stub]) }
 
-  it "should have a scheme, hostname and port" do
-    expect(subject.scheme).to eq("http")
-    expect(subject.host).to eq("localhost")
-    expect(subject.port).to eq(8529)
-  end
+  its(:scheme) { should eq("http") }
+  its(:host) { should eq("localhost") }
+  its(:port) { should eq(8529) }
 
   it "should send a get request" do
     request_stub.get("/_api/my/path") do
@@ -30,7 +28,6 @@ describe Ashikawa::Core::Connection do
     end
 
     subject.send_request "my/path", post: { name: 'new_collection' }
-
     request_stub.verify_stubbed_calls
   end
 
@@ -41,7 +38,6 @@ describe Ashikawa::Core::Connection do
     end
 
     subject.send_request "my/path", put: { name: 'new_collection' }
-
     request_stub.verify_stubbed_calls
   end
 
@@ -51,7 +47,6 @@ describe Ashikawa::Core::Connection do
     end
 
     subject.send_request "my/path", delete: { }
-
     request_stub.verify_stubbed_calls
   end
 
@@ -80,17 +75,17 @@ describe Ashikawa::Core::Connection do
     end
 
     it "should tell if authentication is enabled" do
-      subject.authenticate_with username: "testuser", password: "testpassword"
+      subject.authenticate_with(username: "testuser", password: "testpassword")
       expect(subject.authentication?).to be_true
     end
 
     it "should only accept username & password pairs" do
       expect {
-        subject.authenticate_with username: "kitty"
+        subject.authenticate_with(username: "kitty")
       }.to raise_error(ArgumentError)
 
       expect {
-        subject.authenticate_with password: "cheezburger?"
+        subject.authenticate_with(password: "cheezburger?")
       }.to raise_error(ArgumentError)
     end
 
@@ -234,6 +229,7 @@ describe Ashikawa::Core::Connection do
       end
       expect(logger).to receive(:info).with("GET #{ARANGO_HOST}/_api/test ")
       expect(logger).to receive(:info).with("200 {\"a\":1}")
+
       subject.send_request("test")
     end
 
@@ -243,6 +239,7 @@ describe Ashikawa::Core::Connection do
       end
       expect(logger).to receive(:info).with("POST #{ARANGO_HOST}/_api/test {:a=>2}")
       expect(logger).to receive(:info).with("201 {\"b\":2}")
+
       subject.send_request("test", post: { a: 2})
     end
   end

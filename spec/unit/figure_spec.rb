@@ -2,61 +2,57 @@
 require "ashikawa-core/figure"
 
 describe Ashikawa::Core::Figure do
+  let(:alive_size) { double }
+  let(:alive_count) { double }
+  let(:dead_size) { double }
+  let(:dead_count) { double }
+  let(:dead_deletion) { double }
+  let(:datafiles_count) { double }
+  let(:datafiles_file_size) { double }
+  let(:journals_count) { double }
+  let(:journals_file_size) { double }
+  let(:shapes_count) { double }
+  let(:attributes_count) { double }
+
   let(:raw_figures) {
     {
       "alive" => {
-        "size" => 0,
-        "count" => 0
+        "size" => alive_size,
+        "count" => alive_count
       },
       "dead" => {
-        "size" => 2384,
-        "count" => 149,
-        "deletion" => 0
+        "size" => dead_size,
+        "count" => dead_count,
+        "deletion" => dead_deletion
       },
       "datafiles" => {
-        "count" => 1,
-        "fileSize" => 124
+        "count" => datafiles_count,
+        "fileSize" => datafiles_file_size
       },
       "journals" => {
-        "count" => 1,
-        "fileSize" => 124
+        "count" => journals_count,
+        "fileSize" => journals_file_size
       },
       "shapes" => {
-        "count" => 2
+        "count" => shapes_count
       },
       "attributes" => {
-        "count" => 12
+        "count" => attributes_count
       }
     }
   }
+
   subject { Ashikawa::Core::Figure.new(raw_figures) }
 
-  it "should check for the alive figures" do
-    expect(subject.alive_size).to eq(0)
-    expect(subject.alive_count).to eq(0)
-  end
-
-  it "should check for the dead figures" do
-    expect(subject.dead_size).to eq(2384)
-    expect(subject.dead_count).to eq(149)
-    expect(subject.dead_deletion).to eq(0)
-  end
-
-  it "should check for the datafiles figures" do
-    expect(subject.datafiles_count).to eq(1)
-    expect(subject.datafiles_file_size).to eq(124)
-  end
-
-  it "should check for the journal figures" do
-    expect(subject.journals_count).to eq(1)
-    expect(subject.journals_file_size).to eq(124)
-  end
-
-  it "should check for the shapes figure" do
-    expect(subject.shapes_count).to eq(2)
-  end
-
-  it "should check for the attributes_count figure" do
-    expect(subject.attributes_count).to eq(12)
-  end
+  its(:alive_size)          { should be(alive_size) }
+  its(:alive_count)         { should be(alive_count) }
+  its(:dead_size)           { should be(dead_size) }
+  its(:dead_count)          { should be(dead_count) }
+  its(:dead_deletion)       { should be(dead_deletion) }
+  its(:datafiles_count)     { should be(datafiles_count) }
+  its(:datafiles_file_size) { should be(datafiles_file_size) }
+  its(:journals_count)      { should be(journals_count) }
+  its(:journals_file_size)  { should be(journals_file_size) }
+  its(:shapes_count)        { should be(shapes_count) }
+  its(:attributes_count)    { should be(attributes_count) }
 end
