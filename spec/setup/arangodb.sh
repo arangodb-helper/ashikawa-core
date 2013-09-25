@@ -40,7 +40,7 @@ ${ARANGOD} \
   --javascript.package-path ${ARANGODB_DIR}/js/npm:${ARANGODB_DIR}/js/common/test-data/modules \
   --javascript.action-directory ${ARANGODB_DIR}/js/actions  \
   --database.maximal-journal-size 1048576  \
-  --server.disable-admin-interface true \
+  --server.disable-admin-interface ${ARANGODB_DISABLE_AUTHENTIFICATION} \
   --server.disable-authentication true \
   --javascript.gc-interval 1 &
 

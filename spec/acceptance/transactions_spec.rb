@@ -2,11 +2,7 @@
 require 'acceptance/spec_helper'
 
 describe "Transactions" do
-  subject {
-    Ashikawa::Core::Database.new do |config|
-      config.url = ARANGO_HOST
-    end
-  }
+  subject { DATABASE }
 
   before :each do
     subject.collections.each { |collection| collection.delete }

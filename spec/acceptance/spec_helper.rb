@@ -14,4 +14,14 @@ end
 
 require "ashikawa-core"
 
-ARANGO_HOST = "http://localhost:8529"
+port = ENV["ARANGODB_PORT"] || 8529
+username = ENV["ARANGODB_USERNAME"] || "root"
+password = ENV["ARANGODB_PASSWORD"] || ""
+
+DATABASE = Ashikawa::Core::Database.new do |config|
+  config.url = "http://localhost:#{port}"
+end
+
+unless ENV["ARANGODB_DISABLE_AUTHENTIFICATION"]
+  DATABASE.authenticate_with(username: username, password: password)
+end

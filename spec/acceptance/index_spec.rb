@@ -2,11 +2,7 @@
 require 'acceptance/spec_helper'
 
 describe "Indices" do
-  let(:database) {
-    Ashikawa::Core::Database.new do |config|
-      config.url = ARANGO_HOST
-    end
-  }
+  let(:database) { DATABASE }
   subject { database["documenttest"] }
   let(:index) { subject.add_index(:skiplist, on: [:identifier]) }
 

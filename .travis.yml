@@ -9,6 +9,9 @@ rvm:
   - jruby-head
   - rbx-19mode
   - ruby-head
+env:
+  - ARANGODB_DISABLE_AUTHENTIFICATION=true
+  - ARANGODB_DISABLE_AUTHENTIFICATION=false
 matrix:
   allow_failures:
     - rvm: ruby-head
