@@ -52,7 +52,7 @@ describe Ashikawa::Core::Connection do
 
   it 'should write JSON request' do
     request_stub.post('/_api/my/path') do |req|
-      expect(req[:body]).to eq("{\"test\":1}")
+      expect(req[:body]).to eq('{"test":1}')
       [200, response_headers, JSON.generate({ 'name' => 'dude' })]
     end
 
@@ -62,7 +62,7 @@ describe Ashikawa::Core::Connection do
 
   it 'should parse JSON response' do
     request_stub.get('/_api/my/path') do
-      [200, response_headers, "{\"name\":\"dude\"}"]
+      [200, response_headers, '{"name":"dude"}']
     end
 
     expect(subject.send_request('my/path')).to eq({ 'name' => 'dude' })
@@ -197,7 +197,7 @@ describe Ashikawa::Core::Connection do
 
     it 'should raise an error if a malformed JSON was returned from the server' do
       request_stub.get('/_api/document/4590/333') do
-        [200, response_headers, "{\"a\":1"]
+        [200, response_headers, '{"a":1']
       end
 
       expect { subject.send_request 'document/4590/333' }.to raise_error(Ashikawa::Core::JsonError)
@@ -238,7 +238,7 @@ describe Ashikawa::Core::Connection do
         [201, response_headers, JSON.generate({ b: 2 })]
       end
       expect(logger).to receive(:info).with("POST #{ARANGO_HOST}/_api/test {:a=>2}")
-      expect(logger).to receive(:info).with("201 {\"b\":2}")
+      expect(logger).to receive(:info).with('201 {"b":2}')
 
       subject.send_request('test', post: { a: 2 })
     end

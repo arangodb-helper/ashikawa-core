@@ -412,15 +412,18 @@ module Ashikawa
       #
       # @param [Symbol] type specify the type of the index, for example `:hash`
       # @option opts [Array<Symbol>] on fields on which to apply the index
+      # @option opts [Boolean] unique Should the index be unique? Default is false
       # @return Index
       # @api public
       # @example Add a hash-index to the fields :name and :profession of a collection
       #   people = database['people']
       #   people.add_index(:hash, :on => [:name, :profession])
       def add_index(type, opts)
+        unique = opts[:unique] || false
         response = send_request("index?collection=#{@id}", post: {
           'type' => type.to_s,
-          'fields' => opts[:on].map { |field| field.to_s }
+          'fields' => opts[:on].map { |field| field.to_s },
+          'unique' => unique
         })
 
         Index.new(self, response)

@@ -22,6 +22,12 @@ describe 'Indices' do
     expect(subject.indices[0].class).to eq(Ashikawa::Core::Index)
   end
 
+  it 'should be possible to create an unique index' do
+    index = subject.add_index :skiplist, on: [:identifier], unique: true
+
+    expect(index.unique).to be_true
+  end
+
   it 'should be possible to remove indices' do
     pending 'See Bug #34'
 
