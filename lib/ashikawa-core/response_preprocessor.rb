@@ -52,9 +52,9 @@ module Ashikawa
       # @api private
       def resource_not_found_for(env)
         raise case env[:url].path
-              when %r{\A/_api/document} then Ashikawa::Core::DocumentNotFoundException
-              when %r{\A/_api/collection} then Ashikawa::Core::CollectionNotFoundException
-              when %r{\A/_api/index} then Ashikawa::Core::IndexNotFoundException
+              when %r{\A(/_db/[^/]+)?/_api/document} then Ashikawa::Core::DocumentNotFoundException
+              when %r{\A(/_db/[^/]+)?/_api/collection} then Ashikawa::Core::CollectionNotFoundException
+              when %r{\A(/_db/[^/]+)?/_api/index} then Ashikawa::Core::IndexNotFoundException
               else Ashikawa::Core::ResourceNotFound
         end
       end

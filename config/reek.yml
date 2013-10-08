@@ -45,7 +45,7 @@ NestedIterators:
 NilCheck:
   enabled: true
   exclude:
-  - Ashikawa::Core::Database#setup_new_connection
+  - Ashikawa::Core::Configuration#setup_new_connection
 RepeatedConditional:
   enabled: true
   exclude:

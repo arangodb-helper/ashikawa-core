@@ -15,59 +15,13 @@ describe Ashikawa::Core::Database do
   let(:transaction) { double }
   let(:logger) { double }
   let(:adapter) { double }
+  let(:configuration) { double }
 
-  describe "initialized with connection" do
-    subject { Ashikawa::Core::Database.new do |config|
-      config.connection = connection
-    end }
-
-    its(:host) { should be(host) }
-    its(:port) { should be(port) }
-    its(:scheme) { should be(scheme) }
-  end
-
-  it "should initialize with a connection string" do
-    expect(Ashikawa::Core::Connection).to receive(:new).with(url, {
-      logger: nil,
-      adapter: nil
-    })
-
-    subject.new do |config|
-      config.url = url
-    end
-  end
-
-  it "should initialize with a connection string and logger" do
-    expect(Ashikawa::Core::Connection).to receive(:new).with(url, {
-      logger: logger,
-      adapter: nil
-    })
-
-    subject.new do |config|
-      config.url = url
-      config.logger = logger
-    end
-  end
-
-  it "should initialize with a connection string and adapter" do
-    expect(Ashikawa::Core::Connection).to receive(:new).with(url, {
-      logger: nil,
-      adapter: adapter
-    })
-
-    subject.new do |config|
-      config.url = url
-      config.adapter = adapter
-    end
-  end
-
-  it "should throw an argument error when neither url nor connection was provided" do
-    expect {
-      subject.new do |config|
-        config.adapter = adapter
-        config.logger = logger
-      end
-    }.to raise_error(ArgumentError, /either an url or a connection/)
+  it "should initialize with a configuration object" do
+    expect(Ashikawa::Core::Configuration).to receive(:new)
+      .and_return(configuration)
+    expect(configuration).to receive(:connection)
+    expect { |b| Ashikawa::Core::Database.new(&b) }.to yield_with_args(configuration)
   end
 
   describe "initialized database" do
