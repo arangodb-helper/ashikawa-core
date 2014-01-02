@@ -9,7 +9,7 @@ namespace:
 - Ashikawa::Core::Document
 # - Ashikawa::Core::Edge
 - Ashikawa::Core::Figure
-# - Ashikawa::Core::Index
+- Ashikawa::Core::Index
 # - Ashikawa::Core::KeyOptions
 # - Ashikawa::Core::Query
 # - Ashikawa::Core::RequestPreprocessor
