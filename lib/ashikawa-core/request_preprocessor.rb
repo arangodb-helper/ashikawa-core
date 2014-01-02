@@ -36,11 +36,9 @@ module Ashikawa
       # @param [Symbol] method
       # @param [String] url
       # @param [String] body
-      # @return [nil]
       # @api private
       def log(method, url, body)
         @logger.debug("#{method.upcase} #{url} #{body}")
-        nil
       end
     end
 

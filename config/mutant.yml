@@ -12,7 +12,7 @@ namespace:
 - Ashikawa::Core::Index
 - Ashikawa::Core::KeyOptions
 # - Ashikawa::Core::Query
-# - Ashikawa::Core::RequestPreprocessor
+- Ashikawa::Core::RequestPreprocessor
 # - Ashikawa::Core::Response
 # - Ashikawa::Core::ResponsePreprocessor
 # - Ashikawa::Core::Status
