@@ -13,7 +13,7 @@ RSpec.configure do |config|
 end
 
 # Do not run SimpleCov in Guard
-unless defined?(Guard)
+if ENV['COVERAGE'] == 'true'
   require 'simplecov'
   require 'coveralls'
 

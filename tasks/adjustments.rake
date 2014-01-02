@@ -15,17 +15,3 @@ namespace :spec do
     spec.pattern = 'spec/acceptance/*_spec.rb'
   end
 end
-
-## Metrics
-# Differences to Devtools:
-# * Do not run mutant yet
-
-Rake::Task['ci'].clear
-
-desc 'Run all metrics and specs'
-task ci: %w[
-  spec
-  ci:metrics
-]
-
-task default: :ci

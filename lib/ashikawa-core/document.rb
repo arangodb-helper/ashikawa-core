@@ -95,7 +95,6 @@ module Ashikawa
       #   document = Ashikawa::Core::Document.new(database, raw_document)
       #   document['name'] = 'The dude'
       def []=(attribute_name, value)
-        check_if_persisted!
         @content[attribute_name] = value
       end
 
@@ -145,7 +144,7 @@ module Ashikawa
         @id       = raw_document['_id'] || :not_persisted
         @key      = raw_document['_key']
         @revision = raw_document['_rev'] || :not_persisted
-        @content  = raw_document.delete_if { |key, value| key.start_with?('_') }
+        @content  = raw_document.delete_if { |key| key.start_with?('_') }
         self
       end
 

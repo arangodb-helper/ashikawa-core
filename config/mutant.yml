@@ -1,3 +1,4 @@
 ---
 name: ashikawa-core
-namespace: Ashikawa::Core
+namespace:
+- Ashikawa::Core::Document
