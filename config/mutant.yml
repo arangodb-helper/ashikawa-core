@@ -1,4 +1,19 @@
 ---
 name: ashikawa-core
 namespace:
+# - Ashikawa::Core::Collection
+# - Ashikawa::Core::Configuration
+# - Ashikawa::Core::Connection
+# - Ashikawa::Core::Cursor
+# - Ashikawa::Core::Database
 - Ashikawa::Core::Document
+# - Ashikawa::Core::Edge
+- Ashikawa::Core::Figure
+# - Ashikawa::Core::Index
+# - Ashikawa::Core::KeyOptions
+# - Ashikawa::Core::Query
+# - Ashikawa::Core::RequestPreprocessor
+# - Ashikawa::Core::Response
+# - Ashikawa::Core::ResponsePreprocessor
+# - Ashikawa::Core::Status
+# - Ashikawa::Core::Transaction
