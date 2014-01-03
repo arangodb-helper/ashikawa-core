@@ -56,7 +56,7 @@ module Ashikawa
       def setup_new_connection
         raise(ArgumentError, 'Please provide either an url or a connection to setup the database') if url.nil?
 
-        Ashikawa::Core::Connection.new(url, connection_options)
+        Connection.new(url, connection_options)
       end
 
       def connection_options

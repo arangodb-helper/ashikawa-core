@@ -2,7 +2,7 @@
 name: ashikawa-core
 namespace:
 # - Ashikawa::Core::Collection
-# - Ashikawa::Core::Configuration
+- Ashikawa::Core::Configuration
 # - Ashikawa::Core::Connection
 # - Ashikawa::Core::Cursor
 # - Ashikawa::Core::Database
