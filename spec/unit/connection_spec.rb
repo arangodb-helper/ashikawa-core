@@ -230,7 +230,7 @@ describe Ashikawa::Core::Connection do
 
   describe 'logging' do
     let(:request_stub) { Faraday::Adapter::Test::Stubs.new }
-    let(:logger) { double }
+    let(:logger) { double('Logger') }
     subject do
       Ashikawa::Core::Connection.new(ARANGO_HOST, adapter: [:test, request_stub], logger: logger)
     end
@@ -253,6 +253,31 @@ describe Ashikawa::Core::Connection do
       expect(logger).to receive(:debug).with('201 {"b":2}')
 
       subject.send_request('test', post: { a: 2 })
+    end
+  end
+
+  describe 'initializing Faraday' do
+    subject { Ashikawa::Core::Connection }
+    let(:adapter) { double('Adapter') }
+    let(:logger) { double('Logger') }
+    let(:blocky) { double('Block') }
+
+    it 'should initalize with specific logger and adapter' do
+      expect(Faraday).to receive(:new).with("#{ARANGO_HOST}/_api").and_yield(blocky)
+      expect(blocky).to receive(:request).with(:ashikawa_request, logger)
+      expect(blocky).to receive(:response).with(:ashikawa_response, logger)
+      expect(blocky).to receive(:adapter).with(adapter)
+
+      subject.new(ARANGO_HOST, adapter: adapter, logger: logger)
+    end
+
+    it 'should initialize with defaults when no specific logger and adapter was given' do
+      expect(Faraday).to receive(:new).with("#{ARANGO_HOST}/_api").and_yield(blocky)
+      expect(blocky).to receive(:request).with(:ashikawa_request, NullLogger.instance)
+      expect(blocky).to receive(:response).with(:ashikawa_response, NullLogger.instance)
+      expect(blocky).to receive(:adapter).with(Faraday.default_adapter)
+
+      subject.new(ARANGO_HOST)
     end
   end
 end
