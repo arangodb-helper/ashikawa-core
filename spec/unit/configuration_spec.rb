@@ -70,7 +70,7 @@ describe Ashikawa::Core::Configuration do
 
     it 'should setup authentication when username and password were provided' do
       expect(connection).to receive(:authenticate_with)
-        .with({ username: username, password: password })
+        .with(username, password)
         .and_return(connection)
 
       subject.username = username

@@ -95,19 +95,11 @@ module Ashikawa
 
       # Authenticate with given username and password
       #
-      # @option options [String] username
-      # @option options [String] password
-      # @return [self]
-      # @raise [ArgumentError] if username or password are missing
-      # @api public
-      # @example Authenticate with the database for all future requests
-      #   connection = Connection.new('http://localhost:8529')
-      #   connection.authenticate_with(:username => 'james', :password => 'bond')
-      def authenticate_with(options = {})
-        @authentication = @connection.basic_auth(options.fetch(:username), options.fetch(:password))
-        self
-      rescue KeyError
-        raise ArgumentError, 'missing username or password'
+      # @param [String] username
+      # @param [String] password
+      # @api private
+      def authenticate_with(username, password)
+        @authentication = @connection.basic_auth(username, password)
       end
 
       private

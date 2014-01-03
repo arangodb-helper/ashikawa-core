@@ -75,22 +75,8 @@ describe Ashikawa::Core::Connection do
     end
 
     it 'should tell if authentication is enabled' do
-      subject.authenticate_with(username: 'testuser', password: 'testpassword')
+      subject.authenticate_with('testuser', 'testpassword')
       expect(subject.authentication?).to be_true
-    end
-
-    it 'should only accept username & password pairs' do
-      expect do
-        subject.authenticate_with(username: 'kitty')
-      end.to raise_error(ArgumentError)
-
-      expect do
-        subject.authenticate_with(password: 'cheezburger?')
-      end.to raise_error(ArgumentError)
-    end
-
-    it 'should allow chaining' do
-      expect(subject.authenticate_with(username: 'a', password: 'b')).to eq(subject)
     end
 
     it 'should send the authentication data with every GET request' do
