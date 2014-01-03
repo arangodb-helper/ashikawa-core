@@ -16,4 +16,4 @@ namespace:
 # - Ashikawa::Core::Response
 - Ashikawa::Core::ResponsePreprocessor
 - Ashikawa::Core::Status
-# - Ashikawa::Core::Transaction
+- Ashikawa::Core::Transaction

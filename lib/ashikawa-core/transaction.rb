@@ -77,7 +77,7 @@ module Ashikawa
         @database = database
         @request_parameters = {
           action: action,
-          collections: parse_options(options),
+          collections: options,
           waitForSync: false
         }
       end
@@ -93,21 +93,6 @@ module Ashikawa
         @request_parameters[:params] = action_parameters unless action_parameters == :no_params_provided
         response = @database.send_request('transaction', post: @request_parameters)
         response['result']
-      end
-
-      private
-
-      # Parse the read and write collections from the options
-      #
-      # @option options [Array<String>] :write The collections you want to write to
-      # @option options [Array<String>] :read The collections you want to read from
-      # @return [Hash]
-      # @api private
-      def parse_options(options)
-        collections = {}
-        collections[:write] = options[:write] if options.key? :write
-        collections[:read] = options[:read] if options.key? :read
-        collections
       end
     end
   end
