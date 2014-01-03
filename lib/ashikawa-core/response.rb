@@ -45,7 +45,7 @@ module Ashikawa
         raise JSON::ParserError unless json_content_type?
         JSON.parse(@body)
       rescue JSON::ParserError
-        raise Ashikawa::Core::JsonError
+        raise JsonError
       end
 
       private
@@ -80,7 +80,7 @@ module Ashikawa
       # @return nil
       # @api private
       def bad_syntax
-        raise Ashikawa::Core::BadSyntax
+        raise BadSyntax
       end
 
       # Raise an Authentication Failed Error
@@ -89,7 +89,7 @@ module Ashikawa
       # @return nil
       # @api private
       def authentication_failed
-        raise Ashikawa::Core::AuthenticationFailed
+        raise Core::AuthenticationFailed
       end
 
       # Raise a Client Error for a given body
@@ -98,7 +98,7 @@ module Ashikawa
       # @return nil
       # @api private
       def client_error
-        raise Ashikawa::Core::ClientError, error
+        raise ClientError, error
       end
 
       # Raise a Server Error for a given body
@@ -107,7 +107,7 @@ module Ashikawa
       # @return nil
       # @api private
       def server_error
-        raise Ashikawa::Core::ServerError, error
+        raise ServerError, error
       end
 
       # Raise the fitting ResourceNotFoundException
@@ -117,10 +117,10 @@ module Ashikawa
       # @api private
       def resource_not_found
         raise case @url.path
-              when %r{\A(/_db/[^/]+)?/_api/document} then Ashikawa::Core::DocumentNotFoundException
-              when %r{\A(/_db/[^/]+)?/_api/collection} then Ashikawa::Core::CollectionNotFoundException
-              when %r{\A(/_db/[^/]+)?/_api/index} then Ashikawa::Core::IndexNotFoundException
-              else Ashikawa::Core::ResourceNotFound
+              when %r{\A(/_db/[^/]+)?/_api/document} then DocumentNotFoundException
+              when %r{\A(/_db/[^/]+)?/_api/collection} then CollectionNotFoundException
+              when %r{\A(/_db/[^/]+)?/_api/index} then IndexNotFoundException
+              else ResourceNotFound
         end
       end
 
