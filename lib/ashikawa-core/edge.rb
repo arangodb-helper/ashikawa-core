@@ -34,10 +34,10 @@ module Ashikawa
       # @api public
       # @example Create an Edge
       #   document = Ashikawa::Core::Edge.new(database, raw_edge)
-      def initialize(database, raw_edge, additional_data = {})
+      def initialize(_, raw_edge, additional_data = {})
         @from_id = raw_edge['_from']
         @to_id = raw_edge['_to']
-        super(database, raw_edge, additional_data)
+        super
       end
 
       protected
@@ -47,7 +47,7 @@ module Ashikawa
       # @param [Hash] opts Options for this request
       # @return [Hash] The parsed response from the server
       # @api private
-      def send_request_for_document(opts = {})
+      def send_request_for_document(opts)
         @database.send_request("edge/#{@id}", opts)
       end
     end
