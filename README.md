@@ -46,7 +46,7 @@ If you want to access the `my_db` database of your ArangoDB instance (and not th
 ```ruby
 database = Ashikawa::Core::Database.new do |config|
   config.url = "http://localhost:8529/_db/my_db"
-  config.user = "lebowski"
+  config.username = "lebowski"
   config.password = "i<3bowling"
 end
 ```
