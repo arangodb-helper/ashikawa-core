@@ -57,12 +57,11 @@ module Ashikawa
       def each
         return to_enum(__callee__) unless block_given?
 
-        loop do
+        begin
           @current.each do |raw_document|
             yield parse_raw_document(raw_document)
           end
-          break unless next_batch
-        end
+        end while next_batch
         nil
       end
 
