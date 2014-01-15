@@ -53,7 +53,7 @@ module Ashikawa
       #     config.logger = my_logger
       #   end
       def initialize
-        configuration = Ashikawa::Core::Configuration.new
+        configuration = Configuration.new
         yield(configuration)
         @connection = configuration.connection
       end
@@ -94,7 +94,7 @@ module Ashikawa
       #   database.create_collection('a', :isVolatile => true) # => #<Collection name="a">
       def create_collection(collection_identifier, options = {})
         response = send_request('collection', post: translate_params(collection_identifier, options))
-        Ashikawa::Core::Collection.new(self, response)
+        Collection.new(self, response)
       end
 
       # Get or create a Collection based on name or ID
@@ -109,13 +109,10 @@ module Ashikawa
       #   database = Ashikawa::Core::Database.new('http://localhost:8529')
       #   database['7254820'] # => #<Collection id=7254820>
       def collection(collection_identifier)
-        begin
-          response = send_request("collection/#{collection_identifier}")
-        rescue CollectionNotFoundException
-          response = send_request('collection', post: { name: collection_identifier })
-        end
-
-        Ashikawa::Core::Collection.new(self, response)
+        response = send_request("collection/#{collection_identifier}")
+        Collection.new(self, response)
+      rescue CollectionNotFoundException
+        create_collection(collection_identifier)
       end
 
       alias_method :[], :collection
@@ -142,7 +139,7 @@ module Ashikawa
       #   transaction = database.create_transaction('function () { return 5; }", :read => ["collection_1'])
       #   transaction.execute #=> 5
       def create_transaction(action, collections)
-        Ashikawa::Core::Transaction.new(self, action, collections)
+        Transaction.new(self, action, collections)
       end
 
       private
@@ -154,7 +151,7 @@ module Ashikawa
       # @api private
       def parse_raw_collections(raw_collections)
         raw_collections.map { |collection|
-          Ashikawa::Core::Collection.new(self, collection)
+          Collection.new(self, collection)
         }
       end
 

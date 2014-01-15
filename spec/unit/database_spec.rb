@@ -141,17 +141,12 @@ describe Ashikawa::Core::Database do
     end
 
     it "should create a single collection if it doesn't exist" do
-      allow(connection).to receive :send_request do |path, method|
-        method ||= {}
-        if method.key? :post
-          server_response('collections/60768679')
-        else
-          raise Ashikawa::Core::CollectionNotFoundException
-        end
+      collection = double
+
+      expect(connection).to receive(:send_request).with('collection/new_collection') do
+        raise Ashikawa::Core::CollectionNotFoundException
       end
-      expect(connection).to receive(:send_request).with('collection/new_collection')
-      expect(connection).to receive(:send_request).with('collection', post: { name: 'new_collection' })
-      expect(Ashikawa::Core::Collection).to receive(:new).with(subject, server_response('collections/60768679'))
+      expect(subject).to receive(:create_collection).with('new_collection').and_return(collection)
 
       subject['new_collection']
     end
