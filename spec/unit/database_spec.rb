@@ -16,6 +16,8 @@ describe Ashikawa::Core::Database do
   let(:logger) { double }
   let(:adapter) { double }
   let(:configuration) { double }
+  let(:raw_collection) { double }
+  let(:collection) { double }
 
   it 'should initialize with a configuration object' do
     expect(Ashikawa::Core::Configuration).to receive(:new)
@@ -33,7 +35,7 @@ describe Ashikawa::Core::Database do
 
     it 'should create a query' do
       expect(Ashikawa::Core::Query).to receive(:new)
-        .exactly(1).times
+        .once
         .with(subject)
 
       subject.query
@@ -66,10 +68,10 @@ describe Ashikawa::Core::Database do
     it 'should create a non volatile collection by default' do
       expect(connection).to receive(:send_request)
         .with('collection', post: { name: 'volatile_collection' })
-        .and_return { server_response('collections/60768679') }
+        .and_return { raw_collection }
 
       expect(Ashikawa::Core::Collection).to receive(:new)
-        .with(subject, server_response('collections/60768679'))
+        .with(subject, raw_collection)
 
       subject.create_collection('volatile_collection')
     end
@@ -77,10 +79,10 @@ describe Ashikawa::Core::Database do
     it 'should create a volatile collection when asked' do
       expect(connection).to receive(:send_request)
         .with('collection', post: { name: 'volatile_collection', isVolatile: true })
-        .and_return { |path| server_response('collections/60768679') }
+        .and_return { |path| raw_collection }
 
       expect(Ashikawa::Core::Collection).to receive(:new)
-        .with(subject, server_response('collections/60768679'))
+        .with(subject, raw_collection)
 
       subject.create_collection('volatile_collection', is_volatile: true)
     end
@@ -110,10 +112,10 @@ describe Ashikawa::Core::Database do
     it 'should create an edge collection when asked' do
       expect(connection).to receive(:send_request)
         .with('collection', post: { name: 'volatile_collection', type: 3 })
-        .and_return { |path| server_response('collections/60768679') }
+        .and_return { |path| raw_collection }
 
       expect(Ashikawa::Core::Collection).to receive(:new)
-        .with(subject, server_response('collections/60768679'))
+        .with(subject, raw_collection)
 
       subject.create_collection('volatile_collection', content_type: :edge)
     end
@@ -121,10 +123,10 @@ describe Ashikawa::Core::Database do
     it 'should fetch a single collection if it exists' do
       expect(connection).to receive(:send_request)
         .with('collection/60768679')
-        .and_return { |path| server_response('collections/60768679') }
+        .and_return { |path| raw_collection }
 
       expect(Ashikawa::Core::Collection).to receive(:new)
-        .with(subject, server_response('collections/60768679'))
+        .with(subject, raw_collection)
 
       subject.collection(60_768_679)
     end
@@ -132,17 +134,15 @@ describe Ashikawa::Core::Database do
     it 'should fetch a single collection with the array syntax' do
       expect(connection).to receive(:send_request)
         .with('collection/60768679')
-        .and_return { |path| server_response('collections/60768679') }
+        .and_return { |path| raw_collection }
 
       expect(Ashikawa::Core::Collection).to receive(:new)
-        .with(subject, server_response('collections/60768679'))
+        .with(subject, raw_collection)
 
       subject[60_768_679]
     end
 
     it "should create a single collection if it doesn't exist" do
-      collection = double
-
       expect(connection).to receive(:send_request).with('collection/new_collection') do
         raise Ashikawa::Core::CollectionNotFoundException
       end
