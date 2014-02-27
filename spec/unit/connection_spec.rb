@@ -239,8 +239,8 @@ describe Ashikawa::Core::Connection do
       request_stub.get('/_api/test') do
         [200, response_headers, JSON.generate({ a: 1 })]
       end
-      expect(logger).to receive(:info).with("GET #{ARANGO_HOST}/_api/test ")
-      expect(logger).to receive(:info).with('200 {"a":1}')
+      expect(logger).to receive(:debug).with("GET #{ARANGO_HOST}/_api/test ")
+      expect(logger).to receive(:debug).with('200 {"a":1}')
 
       subject.send_request('test')
     end
@@ -249,8 +249,8 @@ describe Ashikawa::Core::Connection do
       request_stub.post('/_api/test') do
         [201, response_headers, JSON.generate({ b: 2 })]
       end
-      expect(logger).to receive(:info).with("POST #{ARANGO_HOST}/_api/test {:a=>2}")
-      expect(logger).to receive(:info).with('201 {"b":2}')
+      expect(logger).to receive(:debug).with("POST #{ARANGO_HOST}/_api/test {:a=>2}")
+      expect(logger).to receive(:debug).with('201 {"b":2}')
 
       subject.send_request('test', post: { a: 2 })
     end

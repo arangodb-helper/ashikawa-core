@@ -39,7 +39,7 @@ module Ashikawa
       # @return [nil]
       # @api private
       def log(method, url, body)
-        @logger.info("#{method.upcase} #{url} #{body}")
+        @logger.debug("#{method.upcase} #{url} #{body}")
         nil
       end
     end
