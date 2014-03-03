@@ -17,13 +17,13 @@ require 'ashikawa-core'
 port = ENV.fetch('ARANGODB_PORT', 8529)
 username = ENV.fetch('ARANGODB_USERNAME', 'root')
 password = ENV.fetch('ARANGODB_PASSWORD', '')
-disable_authentication = ENV.fetch('ARANGODB_DISABLE_AUTHENTIFICATION', 'true')
+authentification_enabled = ENV['ARANGODB_DISABLE_AUTHENTIFICATION'] == 'false'
 
 # The database instance to use for all specs
 DATABASE = Ashikawa::Core::Database.new do |config|
   config.url = "http://localhost:#{port}"
 
-  unless disable_authentication == 'true'
+  if authentification_enabled
     config.username = username
     config.password = password
   end
