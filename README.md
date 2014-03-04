@@ -9,7 +9,7 @@
 | Gem Version     | [![Gem Version](https://badge.fury.io/rb/ashikawa-core.png)](http://badge.fury.io/rb/ashikawa-core)
 | Dependencies    | [![Dependency Status](https://gemnasium.com/triAGENS/ashikawa-core.png)](https://gemnasium.com/triAGENS/ashikawa-core)
 
-Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version **1.4**. If you want to access an ArangoDB instance running version **1.3** to version [0.8](https://github.com/triAGENS/ashikawa-core/tree/0.8) of this gem (or just update :wink:).
+Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version **1.4**.
 
 All tests run on Travis CI for the following versions of Ruby:
 
@@ -28,7 +28,7 @@ gem install ashikawa-core
 or, when using bundler:
 
 ```ruby
-gem "ashikawa-core", "~> 0.9"
+gem "ashikawa-core", "~> 0.10"
 ```
 
 ## How to Setup a Connection?
@@ -66,7 +66,7 @@ database = Ashikawa::Core::Database.new do |config|
 end
 ```
 
-For a detailed description on how to use Ashikawa::Core please refer to the [documentation](http://rdoc.info/github/triAGENS/ashikawa-core/master/frames). An example:
+For a detailed description on how to use Ashikawa::Core please refer to the [documentation](http://rdoc.info/gems/ashikawa-core/frames). An example:
 
 ```ruby
 database["my_collection"] # => Returns the collection my_collection – creates it, if it doesn't exist
