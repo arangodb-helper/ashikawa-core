@@ -13,9 +13,9 @@ Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level a
 
 All tests run on Travis CI for the following versions of Ruby:
 
-* MRI 1.9.3 and 2.0.0
-* Rubinius 1.9 mode
-* JRuby 1.9 mode
+* MRI 1.9.3, 2.0.0 and 2.1.0
+* Rubinius 2.2.5
+* JRuby 1.7.9 in 1.9 mode
 
 Please note that the [`master`](https://github.com/triAGENS/ashikawa-core) branch is always the stable version released on Ruby Gems and documented on [RDoc](http://www.rubydoc.info/github/triAGENS/ashikawa-core). If you want the most recent version, please refer to the [`development`](https://github.com/triAGENS/ashikawa-core/tree/development) branch.
 
