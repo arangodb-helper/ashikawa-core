@@ -178,15 +178,11 @@ describe 'Basics' do
 
     it 'should be possible to delete a document' do
       collection.fetch(document_key).delete
-      expect {
-        collection.fetch(document_key)
-      }.to raise_exception Ashikawa::Core::DocumentNotFoundException
+      expect { collection.fetch(document_key) }.to raise_exception Ashikawa::Core::DocumentNotFoundException
     end
 
     it "should not be possible to delete a document that doesn't exist" do
-      expect {
-        collection.fetch(123).delete
-      }.to raise_exception Ashikawa::Core::DocumentNotFoundException
+      expect { collection.fetch(123).delete }.to raise_exception Ashikawa::Core::DocumentNotFoundException
     end
 
     it 'should be possible to refresh a document' do

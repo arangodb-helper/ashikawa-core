@@ -150,9 +150,7 @@ module Ashikawa
       # @return [Array]
       # @api private
       def parse_raw_collections(raw_collections)
-        raw_collections.map { |collection|
-          Collection.new(self, collection)
-        }
+        raw_collections.map { |collection| Collection.new(self, collection) }
       end
 
       # Translate the key options into the required format
