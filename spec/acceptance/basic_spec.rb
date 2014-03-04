@@ -146,6 +146,13 @@ describe 'Basics' do
       expect(e.to_id).to eq(b.id)
     end
 
+    it 'should be possible to get a document by either its key or its ID' do
+      collection = subject['documenttests']
+      document = collection.create_document(name: 'The Dude')
+
+      expect(collection.fetch(document.key)).to eq collection.fetch(document.id)
+    end
+
     it 'should be possible to get a single attribute by AQL query' do
       collection = subject['documenttests']
       collection.truncate!

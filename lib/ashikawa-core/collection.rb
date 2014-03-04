@@ -540,7 +540,11 @@ module Ashikawa
       # @return [Hash] parsed JSON response from the server
       # @api private
       def send_request_for_content_key(document_key, opts = {})
-        send_request("#{@content_type}/#{@id}/#{document_key}", opts)
+        if document_key.to_s.include? '/'
+          send_request("#{@content_type}/#{document_key}", opts)
+        else
+          send_request("#{@content_type}/#{@id}/#{document_key}", opts)
+        end
       end
 
       # Send a request for the content of this collection
