@@ -105,8 +105,8 @@ module Ashikawa
       # @api public
       # @example Get the hash representation of a document
       #   document = Ashikawa::Core::Document.new(database, raw_document)
-      #   document.hash #=> { :name => 'Lebowski", :occupation => "Not occupied' }
-      def hash
+      #   document.to_h #=> { :name => 'Lebowski", :occupation => "Not occupied' }
+      def to_h
         @content
       end
 

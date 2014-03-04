@@ -48,14 +48,14 @@ module Ashikawa
       # Initialize a Connection with a given API String
       #
       # @param [String] api_string scheme, hostname and port as a String
-      # @option opts [Object] adapter The Faraday adapter you want to use. Defaults to Default Adapter
-      # @option opts [Object] logger The logger you want to use. Defaults to Null Logger.
+      # @option options [Object] adapter The Faraday adapter you want to use. Defaults to Default Adapter
+      # @option options [Object] logger The logger you want to use. Defaults to Null Logger.
       # @api public
       # @example Create a new Connection
       #  connection = Connection.new('http://localhost:8529')
-      def initialize(api_string, opts = {})
-        logger  = opts[:logger]  || NullLogger.instance
-        adapter = opts[:adapter] || Faraday.default_adapter
+      def initialize(api_string, options = {})
+        logger  = options.fetch(:logger) { NullLogger.instance }
+        adapter = options.fetch(:adapter) { Faraday.default_adapter }
         @connection = Faraday.new("#{api_string}/_api") do |connection|
           connection.request  :ashikawa_request,  logger
           connection.response :ashikawa_response, logger
@@ -95,8 +95,8 @@ module Ashikawa
 
       # Authenticate with given username and password
       #
-      # @option [String] username
-      # @option [String] password
+      # @option options [String] username
+      # @option options [String] password
       # @return [self]
       # @raise [ArgumentError] if username or password are missing
       # @api public
@@ -104,9 +104,10 @@ module Ashikawa
       #   connection = Connection.new('http://localhost:8529')
       #   connection.authenticate_with(:username => 'james', :password => 'bond')
       def authenticate_with(options = {})
-        raise ArgumentError, 'missing username or password' unless options.key? :username and options.key? :password
-        @authentication = @connection.basic_auth(options[:username], options[:password])
+        @authentication = @connection.basic_auth(options.fetch(:username), options.fetch(:password))
         self
+      rescue KeyError
+        raise ArgumentError, 'missing username or password'
       end
 
       private

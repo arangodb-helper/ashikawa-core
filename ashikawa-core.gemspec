@@ -22,8 +22,9 @@ Gem::Specification.new do |gem|
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.require_paths = ["lib"]
 
-  gem.add_dependency "faraday", "~> 0.8.6"
-  gem.add_dependency "json", "~> 1.8.0"
+  gem.add_dependency "faraday", "~> 0.8.8"
+  gem.add_dependency "json", "~> 1.8.1"
   gem.add_dependency "null_logger", "~> 0.0.1"
-  gem.add_dependency "equalizer", "~> 0.0.5"
+  gem.add_dependency "equalizer", "~> 0.0.8"
+  gem.add_dependency "rubysl-base64" if RUBY_ENGINE == "rbx"
 end

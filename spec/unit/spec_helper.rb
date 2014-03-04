@@ -30,8 +30,9 @@ unless defined?(Guard)
   end
 end
 
-# Helper to simulate Server Responses. Parses the fixtures in the spec folder
 require 'json'
+
+# Helper to simulate Server Responses. Parses the fixtures in the spec folder
 def server_response(path)
   JSON.parse(File.readlines("spec/fixtures/#{path}.json").join)
 end

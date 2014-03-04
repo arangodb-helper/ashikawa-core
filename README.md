@@ -3,21 +3,19 @@
 | Project         | Ashikawa::Core
 |:----------------|:--------------------------------------------------
 | Homepage        | http://triagens.github.io/ashikawa-core/
-| Documentation   | http://www.rubydoc.info/github/triAGENS/ashikawa-core
+| Documentation   | [RubyDoc](http://www.rubydoc.info/gems/ashikawa-core)
 | CI              | [![Build Status](https://secure.travis-ci.org/triAGENS/ashikawa-core.png?branch=master)](http://travis-ci.org/triAGENS/ashikawa-core)
 | Code Metrics    | [![Code Climate](https://codeclimate.com/github/triAGENS/ashikawa-core.png)](https://codeclimate.com/github/triAGENS/ashikawa-core) [![Coverage Status](https://coveralls.io/repos/triAGENS/ashikawa-core/badge.png?branch=coverall)](https://coveralls.io/r/triAGENS/ashikawa-core)
 | Gem Version     | [![Gem Version](https://badge.fury.io/rb/ashikawa-core.png)](http://badge.fury.io/rb/ashikawa-core)
 | Dependencies    | [![Dependency Status](https://gemnasium.com/triAGENS/ashikawa-core.png)](https://gemnasium.com/triAGENS/ashikawa-core)
 
-Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version **1.4**. If you want to access an ArangoDB instance running version **1.3** to version [0.8](https://github.com/triAGENS/ashikawa-core/tree/0.8) of this gem (or just update :wink:).
+Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version **1.4**.
 
 All tests run on Travis CI for the following versions of Ruby:
 
-* MRI 1.9.3 and 2.0.0
-* Rubinius 1.9 mode
-* JRuby 1.9 mode
-
-We also run on JRuby and MRI Head, but they are allowed failures (Please see [Travis](http://travis-ci.org/triAGENS/ashikawa-core) for their build status).
+* MRI 1.9.3, 2.0.0 and 2.1.0
+* Rubinius 2.2.5
+* JRuby 1.7.9 in 1.9 mode
 
 Please note that the [`master`](https://github.com/triAGENS/ashikawa-core) branch is always the stable version released on Ruby Gems and documented on [RDoc](http://www.rubydoc.info/github/triAGENS/ashikawa-core). If you want the most recent version, please refer to the [`development`](https://github.com/triAGENS/ashikawa-core/tree/development) branch.
 
@@ -30,7 +28,7 @@ gem install ashikawa-core
 or, when using bundler:
 
 ```ruby
-gem "ashikawa-core", "~> 0.9"
+gem "ashikawa-core", "~> 0.10"
 ```
 
 ## How to Setup a Connection?
@@ -68,7 +66,7 @@ database = Ashikawa::Core::Database.new do |config|
 end
 ```
 
-For a detailed description on how to use Ashikawa::Core please refer to the [documentation](http://rdoc.info/github/triAGENS/ashikawa-core/master/frames). An example:
+For a detailed description on how to use Ashikawa::Core please refer to the [documentation](http://rdoc.info/gems/ashikawa-core/frames). An example:
 
 ```ruby
 database["my_collection"] # => Returns the collection my_collection – creates it, if it doesn't exist

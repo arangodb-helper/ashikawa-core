@@ -24,15 +24,6 @@ CollectionMethods:
     find:     'detect'
     find_all: 'select'
 
-# Do not force public/protected/private keyword to be indented at the same
-# level as the def keyword. My personal preference is to outdent these keywords
-# because I think when scanning code it makes it easier to identify the
-# sections of code and visually separate them. When the keyword is at the same
-# level I think it sort of blends in with the def keywords and makes it harder
-# to scan the code and see where the sections are.
-AccessControl:
-  Enabled: true
-
 HashSyntax:
   Enabled: true
 
@@ -54,9 +45,6 @@ AlignParameters:
 
 # I don't agree with this
 Blocks:
-  Enabled: false
-
-SymbolName:
   Enabled: false
 
 NumericLiterals:
@@ -95,3 +83,15 @@ AndOr:
 # This is done by YARD Stick
 Documentation:
   Enabled: false
+
+# Braces can be really, really useful for clarity
+BracesAroundHashParameters:
+  Enabled: false
+
+# I prefer raise over fail
+SignalException:
+  EnforcedStyle: only_raise
+
+ClassLength:
+  CountComments: false
+  Max: 130

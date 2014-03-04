@@ -11,7 +11,7 @@ describe Ashikawa::Core::Document do
   let(:first_name) { double }
   let(:last_name) { double }
   let(:more_info) { double }
-  let(:delete_payload) {{ delete: {} }}
+  let(:delete_payload) { { delete: {} } }
   let(:raw_data) do
     {
       '_id' => id,
@@ -69,8 +69,8 @@ describe Ashikawa::Core::Document do
 
     its(['first_name']) { should be(first_name) }
     its(['no_name']) { should be_nil }
-    its(:hash) { should be_instance_of Hash }
-    its(:hash) { should include('first_name' => first_name) }
+    its(:to_h) { should be_instance_of Hash }
+    its(:to_h) { should include('first_name' => first_name) }
 
     it 'should be deletable' do
       expect(database).to receive(:send_request).with(path, delete_payload)

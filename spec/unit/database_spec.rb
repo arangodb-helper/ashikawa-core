@@ -39,13 +39,6 @@ describe Ashikawa::Core::Database do
       subject.query
     end
 
-    it 'should delegate authentication to the connection' do
-      expect(connection).to receive(:authenticate_with)
-        .with({ username: 'user', password: 'password' })
-
-      subject.authenticate_with username: 'user', password: 'password'
-    end
-
     it 'should fetch all available non-system collections' do
       expect(connection).to receive(:send_request)
         .with('collection')

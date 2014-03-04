@@ -55,10 +55,15 @@ module Ashikawa
       # @api private
       def setup_new_connection
         raise(ArgumentError, 'Please provide either an url or a connection to setup the database') if url.nil?
-        Ashikawa::Core::Connection.new(url, {
-          logger: logger,
-          adapter: adapter
-        })
+
+        Ashikawa::Core::Connection.new(url, connection_options)
+      end
+
+      def connection_options
+        opts = {}
+        opts[:logger] = logger if logger
+        opts[:adapter] = adapter if adapter
+        opts
       end
     end
   end

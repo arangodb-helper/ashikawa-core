@@ -63,7 +63,7 @@ module Ashikawa
       # @api public
       # @example Find all documents in a collection that are red
       #   query = Ashikawa::Core::Query.new(collection)
-      #   query.by_example({ 'color' => 'red' }, :options => { :limit => 1 }) #=> #<Cursor id=2444>
+      #   query.by_example({ 'color' => 'red' }, { :limit => 1 }) #=> #<Cursor id=2444>
       def by_example(example = {}, options = {})
         simple_query_request('simple/by-example', { example: example }.merge(options))
       end

@@ -85,15 +85,15 @@ module Ashikawa
       # Create a Collection based on name
       #
       # @param [String] collection_identifier The desired name of the collection
-      # @option opts [Boolean] :is_volatile Should the collection be volatile? Default is false
-      # @option opts [Boolean] :content_type What kind of content should the collection have? Default is :document
+      # @option options [Boolean] :is_volatile Should the collection be volatile? Default is false
+      # @option options [Boolean] :content_type What kind of content should the collection have? Default is :document
       # @return [Collection]
       # @api public
       # @example Create a new, volatile collection
       #   database = Ashikawa::Core::Database.new('http://localhost:8529')
       #   database.create_collection('a', :isVolatile => true) # => #<Collection name="a">
-      def create_collection(collection_identifier, opts = {})
-        response = send_request('collection', post: translate_params(collection_identifier, opts))
+      def create_collection(collection_identifier, options = {})
+        response = send_request('collection', post: translate_params(collection_identifier, options))
         Ashikawa::Core::Collection.new(self, response)
       end
 
@@ -143,24 +143,6 @@ module Ashikawa
       #   transaction.execute #=> 5
       def create_transaction(action, collections)
         Ashikawa::Core::Transaction.new(self, action, collections)
-      end
-
-      # Authenticate with given username and password
-      #
-      # @option [String] username
-      # @option [String] password
-      # @return [self]
-      # @raise [ArgumentError] if username or password are missing
-      # @api public
-      # @deprecated Use the initialization block instead
-      # @example Authenticate with the database for all future requests
-      #   database = Ashikawa::Core::Database.new do |config|
-      #     config.url = 'http://localhost:8529'
-      #   end
-      #   database.authenticate_with(:username => 'james', :password => 'bond')
-      def authenticate_with(options = {})
-        warn 'authenticate_with is deprecated. Please use the config block instead.'
-        @connection.authenticate_with(options)
       end
 
       private

@@ -4,7 +4,16 @@ require 'ashikawa-core/collection'
 
 describe Ashikawa::Core::Collection do
   let(:database) { double }
-  let(:raw_document_collection) { server_response('collections/60768679') }
+  let(:raw_document_collection) do
+    {
+      'id' => '60768679',
+      'name' => 'example_1',
+      'status' => 3,
+      'type' => 2,
+      'error' => false,
+      'code' => 200
+    }
+  end
   let(:raw_edge_collection) do
     {
       'id' => '60768679',

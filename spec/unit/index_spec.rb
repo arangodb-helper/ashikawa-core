@@ -6,7 +6,7 @@ describe Ashikawa::Core::Index do
   let(:collection) { double }
   let(:id) { '167137465/168054969' }
   let(:path) { 'index/167137465/168054969' }
-  let(:delete_payload) {{ delete: {} }}
+  let(:delete_payload) { { delete: {} } }
   let(:type_as_sym) { double }
   let(:type) { double(to_sym: type_as_sym) }
   let(:field_as_sym) { double }

@@ -58,7 +58,7 @@ describe Ashikawa::Core::Edge do
 
   describe 'initializing edge with additional data' do
     let(:more_info) { double }
-    let(:additional_data) {{ more_info: more_info }}
+    let(:additional_data) { { more_info: more_info } }
     subject { Ashikawa::Core::Edge.new(database, raw_data, additional_data) }
 
     its(['more_info']) { should eq(more_info) }

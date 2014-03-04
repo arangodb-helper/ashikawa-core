@@ -64,7 +64,7 @@ describe Ashikawa::Core::Query do
     end
 
     describe 'all by example' do
-      let(:example) {{ hello: 'world' }}
+      let(:example) { { hello: 'world' } }
       let(:response) { server_response('simple-queries/example') }
       let(:limit) { double }
       let(:skip) { double }

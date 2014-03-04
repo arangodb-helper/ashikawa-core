@@ -18,8 +18,7 @@ DataClump:
   min_clump_size: 2
 DuplicateMethodCall:
   enabled: true
-  exclude:
-  - Ashikawa::Core::ResponsePreprocessor#handle_status
+  exclude: []
   max_calls: 1
   allow_calls: []
 FeatureEnvy:
@@ -62,7 +61,9 @@ TooManyMethods:
   max_methods: 15
 TooManyStatements:
   enabled: true
-  exclude: []
+  exclude:
+  - Ashikawa::Core::Connection#initialize
+  - Ashikawa::Core::Figure#initialize
   max_statements: 5
 UncommunicativeMethodName:
   enabled: true
@@ -91,7 +92,7 @@ UncommunicativeVariableName:
   enabled: true
   exclude: []
   reject:
-  - !ruby/regexp /^.$/
+  - !ruby/regexp /^[^_]$/
   - !ruby/regexp /[0-9]$/
   - !ruby/regexp /[A-Z]/
   accept: []
@@ -102,3 +103,6 @@ UtilityFunction:
   enabled: false
   exclude: []
   max_helper_calls: 0
+PrimaDonnaMethod:
+  enabled: false
+  exclude: []

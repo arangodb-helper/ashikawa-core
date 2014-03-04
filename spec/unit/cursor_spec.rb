@@ -45,7 +45,7 @@ describe Ashikawa::Core::Cursor do
       expect(Ashikawa::Core::Document).to receive(:new)
         .exactly(5).times
 
-      subject.each { }
+      subject.each {}
     end
 
     it 'should return the raw string when the response consists of strings' do
@@ -112,7 +112,7 @@ describe Ashikawa::Core::Cursor do
       expect(Ashikawa::Core::Edge).to receive(:new)
         .exactly(2).times
 
-      subject.each { }
+      subject.each {}
     end
   end
 
