@@ -45,6 +45,15 @@ module Ashikawa
       #   connection.port # => 8529
       def_delegator :@connection, :port
 
+      # The Faraday connection object
+      #
+      # @return [Faraday]
+      # @api public
+      # @example Set additional response middleware
+      #   connection = Connection.new('http://localhost:8529')
+      #   connection.connection.response :caching
+      attr_reader :connection
+
       # Initialize a Connection with a given API String
       #
       # @param [String] api_string scheme, hostname and port as a String
