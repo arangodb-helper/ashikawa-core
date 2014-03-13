@@ -4,8 +4,8 @@ require 'faraday'
 require 'null_logger'
 require 'uri'
 require 'equalizer'
-require 'ashikawa-core/request_preprocessor'
-require 'ashikawa-core/response_preprocessor'
+require 'faraday_middleware'
+require 'ashikawa-core/error_response'
 
 module Ashikawa
   module Core
@@ -56,9 +56,14 @@ module Ashikawa
       def initialize(api_string, options = {})
         logger  = options.fetch(:logger) { NullLogger.instance }
         adapter = options.fetch(:adapter) { Faraday.default_adapter }
+
         @connection = Faraday.new("#{api_string}/_api") do |connection|
-          connection.request  :ashikawa_request,  logger
-          connection.response :ashikawa_response, logger
+          connection.request :json
+
+          connection.response :logger, logger
+          connection.response :error_response
+          connection.response :json
+
           connection.adapter(*adapter)
         end
       end
@@ -78,6 +83,8 @@ module Ashikawa
         method = http_verb(params)
         result = @connection.public_send(method, path, params[method])
         result.body
+      rescue Faraday::Error::ParsingError
+        raise Ashikawa::Core::JsonError
       end
 
       # Checks if authentication for this Connection is active or not

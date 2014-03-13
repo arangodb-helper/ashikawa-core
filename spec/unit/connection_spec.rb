@@ -50,25 +50,6 @@ describe Ashikawa::Core::Connection do
     request_stub.verify_stubbed_calls
   end
 
-  it 'should write JSON request' do
-    request_stub.post('/_api/my/path') do |req|
-      expect(req[:body]).to eq('{"test":1}')
-      [200, response_headers, JSON.generate({ 'name' => 'dude' })]
-    end
-
-    subject.send_request('my/path', post: { 'test' => 1 })
-    request_stub.verify_stubbed_calls
-  end
-
-  it 'should parse JSON response' do
-    request_stub.get('/_api/my/path') do
-      [200, response_headers, '{"name":"dude"}']
-    end
-
-    expect(subject.send_request('my/path')).to eq({ 'name' => 'dude' })
-    request_stub.verify_stubbed_calls
-  end
-
   describe 'authentication' do
     it 'should have authentication turned off by default' do
       expect(subject.authentication?).to be_false
@@ -202,44 +183,6 @@ describe Ashikawa::Core::Connection do
 
       request_stub.verify_stubbed_calls
     end
-
-    it 'should raise an error if the content type of the response is not JSON' do
-      request_stub.get('/_api/document/4590/333') do
-        [200, { 'content-type' => 'text/html; charset=utf-8' }, '']
-      end
-
-      expect { subject.send_request 'document/4590/333' }.to raise_error(Ashikawa::Core::JsonError)
-
-      request_stub.verify_stubbed_calls
-    end
-  end
-
-  describe 'logging' do
-    let(:request_stub) { Faraday::Adapter::Test::Stubs.new }
-    let(:logger) { double('Logger') }
-    subject do
-      Ashikawa::Core::Connection.new(ARANGO_HOST, adapter: [:test, request_stub], logger: logger)
-    end
-
-    it 'should log a get request' do
-      request_stub.get('/_api/test') do
-        [200, response_headers, JSON.generate({ a: 1 })]
-      end
-      expect(logger).to receive(:debug).with("GET #{ARANGO_HOST}/_api/test ")
-      expect(logger).to receive(:debug).with('200 {"a":1}')
-
-      subject.send_request('test')
-    end
-
-    it 'should log a post request' do
-      request_stub.post('/_api/test') do
-        [201, response_headers, JSON.generate({ b: 2 })]
-      end
-      expect(logger).to receive(:debug).with("POST #{ARANGO_HOST}/_api/test {:a=>2}")
-      expect(logger).to receive(:debug).with('201 {"b":2}')
-
-      subject.send_request('test', post: { a: 2 })
-    end
   end
 
   describe 'initializing Faraday' do
@@ -250,8 +193,10 @@ describe Ashikawa::Core::Connection do
 
     it 'should initalize with specific logger and adapter' do
       expect(Faraday).to receive(:new).with("#{ARANGO_HOST}/_api").and_yield(blocky)
-      expect(blocky).to receive(:request).with(:ashikawa_request, logger)
-      expect(blocky).to receive(:response).with(:ashikawa_response, logger)
+      expect(blocky).to receive(:request).with(:json)
+      expect(blocky).to receive(:response).with(:logger, logger)
+      expect(blocky).to receive(:response).with(:error_response)
+      expect(blocky).to receive(:response).with(:json)
       expect(blocky).to receive(:adapter).with(adapter)
 
       subject.new(ARANGO_HOST, adapter: adapter, logger: logger)
@@ -259,8 +204,10 @@ describe Ashikawa::Core::Connection do
 
     it 'should initialize with defaults when no specific logger and adapter was given' do
       expect(Faraday).to receive(:new).with("#{ARANGO_HOST}/_api").and_yield(blocky)
-      expect(blocky).to receive(:request).with(:ashikawa_request, NullLogger.instance)
-      expect(blocky).to receive(:response).with(:ashikawa_response, NullLogger.instance)
+      expect(blocky).to receive(:request).with(:json)
+      expect(blocky).to receive(:response).with(:logger, NullLogger.instance)
+      expect(blocky).to receive(:response).with(:error_response)
+      expect(blocky).to receive(:response).with(:json)
       expect(blocky).to receive(:adapter).with(Faraday.default_adapter)
 
       subject.new(ARANGO_HOST)

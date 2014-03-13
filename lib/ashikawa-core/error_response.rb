@@ -1,5 +1,4 @@
 # -*- encoding : utf-8 -*-
-require 'json'
 require 'ashikawa-core/exceptions/client_error'
 require 'ashikawa-core/exceptions/client_error/resource_not_found'
 require 'ashikawa-core/exceptions/client_error/resource_not_found/index_not_found'
@@ -13,7 +12,7 @@ require 'ashikawa-core/exceptions/server_error/json_error'
 module Ashikawa
   module Core
     # A response from the server
-    class Response
+    class ErrorResponse < Faraday::Response::Middleware
       # Status code for a [Bad Request](http://httpstatus.es/400)
       BadSyntaxStatus = 400
 
@@ -29,35 +28,11 @@ module Ashikawa
       # All status codes for server errors
       ServerErrorStatuses = 500...599
 
-      def initialize(env)
-        @status = env[:status]
+      def on_complete(env)
         @body = env[:body]
         @url = env[:url]
-        @response_headers = env[:response_headers]
-        handle_status
-      end
 
-      # Parsed version of the body
-      #
-      # @param [Hash] env Environment info
-      # @return [Hash] The parsed body
-      # @api private
-      def parsed_body
-        raise JSON::ParserError unless json_content_type?
-        JSON.parse(@body)
-      rescue JSON::ParserError
-        raise JsonError
-      end
-
-      private
-
-      # Handle the status code
-      #
-      # @param [Hash] env Environment info
-      # @return [nil]
-      # @api private
-      def handle_status
-        case @status
+        case env[:status]
         when BadSyntaxStatus then bad_syntax
         when AuthenticationFailed then authentication_failed
         when ResourceNotFoundError then resource_not_found
@@ -66,14 +41,7 @@ module Ashikawa
         end
       end
 
-      # Check if the Content Type is JSON
-      #
-      # @param [String] content_type
-      # @return [Boolean]
-      # @api private
-      def json_content_type?
-        @response_headers['content-type'] == 'application/json; charset=utf-8'
-      end
+      private
 
       # Raise a Bad Syntax Error
       #
@@ -131,9 +99,10 @@ module Ashikawa
       # @return [String] The formatted error message
       # @api private
       def error
-        parsed_body = JSON.parse(@body)
-        "#{parsed_body['errorNum']}: #{parsed_body["errorMessage"]}"
+        "#{@body['errorNum']}: #{@body["errorMessage"]}"
       end
     end
+
+    Faraday.register_middleware :response, error_response: -> { ErrorResponse }
   end
 end
