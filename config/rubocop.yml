@@ -5,7 +5,7 @@ AllCops:
     - 'Guardfile'
     - 'Rakefile'
   Excludes:
-    - 'spec/setup/**/*'
+    - !ruby/regexp /spec\/setup/
 
 # Avoid parameter lists longer than five parameters.
 ParameterLists:
@@ -74,7 +74,7 @@ Alias:
   Enabled: true
 
 Loop:
-  Enabled: true
+  Enabled: false
 
 # Do not agree at all
 AndOr:
@@ -94,4 +94,4 @@ SignalException:
 
 ClassLength:
   CountComments: false
-  Max: 130
+  Max: 140
