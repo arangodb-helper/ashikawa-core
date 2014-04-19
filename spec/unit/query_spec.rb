@@ -194,6 +194,16 @@ describe Ashikawa::Core::Query do
         subject.execute(query, count: count, batch_size: batch_size)
       end
 
+      it 'passes bound variables to the server' do
+        allow(collection).to receive(:database)
+          .and_return(double)
+        expect(collection).to receive(:send_request)
+          .with('cursor', post: {"bindVars" => {'foo' => "bar"}, 'query' => query } )
+          .and_return(response)
+
+        subject.execute(query, bindVars: {'foo' => "bar"})
+      end
+
       it 'should return true when asked if a valid query is valid' do
         expect(collection).to receive(:send_request)
           .with('query', post: { 'query' => query })
