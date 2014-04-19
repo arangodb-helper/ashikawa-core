@@ -18,7 +18,7 @@ module Ashikawa
         'simple/near'          => [:latitude, :longitude, :distance, :skip, :limit, :geo, :collection],
         'simple/within'        => [:latitude, :longitude, :radius, :distance, :skip, :limit, :geo, :collection],
         'simple/range'         => [:attribute, :left, :right, :closed, :limit, :skip, :collection],
-        'cursor'               => [:query, :count, :batch_size, :collection],
+        'cursor'               => [:query, :count, :batch_size, :collection, :bindVars],
         'query'                => [:query],
         'simple/first-example' => [:example, :collection]
       }
