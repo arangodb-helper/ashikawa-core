@@ -36,7 +36,7 @@ module Ashikawa
       #   status = Ashikawa::Core::Status.new(3)
       #   status.new_born? #=> false
       def new_born?
-        @code == STATUS_NEW_BORN
+        @code.equal?(STATUS_NEW_BORN)
       end
 
       # Checks if the collection is unloaded
@@ -47,7 +47,7 @@ module Ashikawa
       #   status = Ashikawa::Core::Status.new(3)
       #   status.unloaded? #=> false
       def unloaded?
-        @code == STATUS_UNLOADED
+        @code.equal?(STATUS_UNLOADED)
       end
 
       # Checks if the collection is loaded
@@ -58,7 +58,7 @@ module Ashikawa
       #   status = Ashikawa::Core::Status.new(3)
       #   status.loaded? #=> true
       def loaded?
-        @code == STATUS_LOADED
+        @code.equal?(STATUS_LOADED)
       end
 
       # Checks if the collection is in the process of being unloaded
@@ -69,7 +69,7 @@ module Ashikawa
       #   status = Ashikawa::Core::Status.new(3)
       #   status.being_unloaded? #=> false
       def being_unloaded?
-        @code == STATUS_BEING_UNLOADED
+        @code.equal?(STATUS_BEING_UNLOADED)
       end
 
       # Checks if the collection is corrupted

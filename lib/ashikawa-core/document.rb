@@ -58,7 +58,7 @@ module Ashikawa
       #   document = Ashikawa::Core::Document.new(database, raw_document)
       #   document.check_if_persisted!
       def check_if_persisted!
-        raise DocumentNotFoundException if @id == :not_persisted
+        raise DocumentNotFoundException if @id.equal?(:not_persisted)
       end
 
       # Get the value of an attribute of the document

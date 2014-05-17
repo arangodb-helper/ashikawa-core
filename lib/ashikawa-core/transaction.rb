@@ -90,7 +90,7 @@ module Ashikawa
       # @example Run a Transaction
       #   transaction.execute({ :a => 5 })
       def execute(action_parameters = :no_params_provided)
-        @request_parameters[:params] = action_parameters unless action_parameters == :no_params_provided
+        @request_parameters[:params] = action_parameters unless action_parameters.equal?(:no_params_provided)
         response = @database.send_request('transaction', post: @request_parameters)
         response['result']
       end
