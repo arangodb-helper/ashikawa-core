@@ -50,32 +50,36 @@
 </tr>
 <tr>
 <td align="left">CI</td>
-<td align="left"><a href="http://travis-ci.org/triAGENS/ashikawa-core"><img src="https://secure.travis-ci.org/triAGENS/ashikawa-core.png?branch=master" alt="Build Status"></a></td>
+<td align="left"><a href="http://travis-ci.org/triAGENS/ashikawa-core"><img src="http://img.shields.io/travis/triAGENS/ashikawa-core.svg" alt="Build Status"></a></td>
 </tr>
 <tr>
 <td align="left">Code Metrics</td>
-<td align="left"><a href="https://codeclimate.com/github/triAGENS/ashikawa-core"><img src="https://codeclimate.com/github/triAGENS/ashikawa-core.png" alt="Code Climate"></a></td>
+<td align="left">
+<a href="https://codeclimate.com/github/triAGENS/ashikawa-core"><img src="http://img.shields.io/codeclimate/github/triAGENS/ashikawa-core.svg" alt="Code Climate"></a> <a href="https://codeclimate.com/github/triAGENS/ashikawa-core"><img src="http://img.shields.io/codeclimate/coverage/github/triAGENS/ashikawa-core.svg" alt="Code Climate Coverage"></a>
+</td>
+</tr>
+<tr>
+<td align="left">Inline docs</td>
+<td align="left"><a href="http://inch-pages.github.io/github/triAGENS/ashikawa-core"><img src="http://inch-pages.github.io/github/triAGENS/ashikawa-core.svg" alt="Inline docs"></a></td>
 </tr>
 <tr>
 <td align="left">Gem Version</td>
-<td align="left"><a href="http://badge.fury.io/rb/ashikawa-core"><img src="https://badge.fury.io/rb/ashikawa-core.png" alt="Gem Version"></a></td>
+<td align="left"><a href="http://rubygems.org/gems/ashikawa-core"><img src="http://img.shields.io/gem/v/ashikawa-core.svg" alt="Gem Version"></a></td>
 </tr>
 <tr>
 <td align="left">Dependencies</td>
-<td align="left"><a href="https://gemnasium.com/triAGENS/ashikawa-core"><img src="https://gemnasium.com/triAGENS/ashikawa-core.png" alt="Dependency Status"></a></td>
+<td align="left"><a href="https://gemnasium.com/triAGENS/ashikawa-core"><img src="http://img.shields.io/gemnasium/triAGENS/ashikawa-core.svg" alt="Dependency Status"></a></td>
 </tr>
 </tbody>
-</table><p>Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version <strong>1.4</strong> and the preview of <strong>2.0</strong>.</p>
+</table><p>Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version <strong>2.1</strong>.</p>
 
 <p>All tests run on Travis CI for the following versions of Ruby:</p>
 
 <ul>
-<li>MRI 1.9.3, 2.0.0 and 2.1.0</li>
-<li>Rubinius 2.2.5</li>
-<li>JRuby 1.7.9 in 1.9 mode</li>
-</ul><p>Please note that the <a href="https://github.com/triAGENS/ashikawa-core"><code>master</code></a> branch is always the stable version released on Ruby Gems and documented on <a href="http://www.rubydoc.info/github/triAGENS/ashikawa-core">RDoc</a>. If you want the most recent version, please refer to the <a href="https://github.com/triAGENS/ashikawa-core/tree/development"><code>development</code></a> branch.</p>
-
-<h2>
+<li>MRI 1.9.3, 2.0.0 and 2.1.2</li>
+<li>Rubinius 2.2.6</li>
+<li>JRuby 1.7.12</li>
+</ul><h2>
 <a name="how-to-install-it" class="anchor" href="#how-to-install-it"><span class="octicon octicon-link"></span></a>How to install it?</h2>
 
 <pre lang="shell"><code>gem install ashikawa-core
@@ -83,7 +87,7 @@
 
 <p>or, when using bundler:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s2">"ashikawa-core"</span><span class="p">,</span> <span class="s2">"~&gt; 0.10"</span>
+<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s2">"ashikawa-core"</span>
 </pre></div>
 
 <h2>
@@ -99,7 +103,8 @@
 <p>If you want to access the <code>my_db</code> database of your ArangoDB instance (and not the <code>_system</code> database) and connect as a certain user, do the following:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="n">database</span> <span class="o">=</span> <span class="no">Ashikawa</span><span class="o">::</span><span class="no">Core</span><span class="o">::</span><span class="no">Database</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s2">"http://localhost:8529/_db/my_db"</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s2">"http://localhost:8529"</span>
+  <span class="n">configl</span><span class="o">.</span><span class="n">database_name</span> <span class="o">=</span> <span class="s1">'my_db'</span>
   <span class="n">config</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">"lebowski"</span>
   <span class="n">config</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s2">"i&lt;3bowling"</span>
 <span class="k">end</span>
@@ -129,7 +134,7 @@
 <h1>
 <a name="issues-or-questions" class="anchor" href="#issues-or-questions"><span class="octicon octicon-link"></span></a>Issues or Questions</h1>
 
-<p>If you find a bug in this gem, please report it on <a href="https://github.com/triAGENS/ashikawa-core/issues">our tracker</a>. If you have a question, just contact us via the <a href="https://groups.google.com/forum/?fromgroups#!forum/ashikawa">mailing list</a> – we are happy to help you <img class="emoji" title=":smile:" alt=":smile:" src="https://github.global.ssl.fastly.net/images/icons/emoji/smile.png" height="20" width="20" align="absmiddle"></p>
+<p>If you find a bug in this gem, please report it on <a href="https://github.com/triAGENS/ashikawa-core/issues">our tracker</a>. If you have a question, just contact us via the <a href="https://groups.google.com/forum/?fromgroups#!forum/ashikawa">mailing list</a> – we are happy to help you <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/smile.png" height="20" width="20" align="absmiddle"></p>
 
 <h1>
 <a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h1>
@@ -143,7 +148,10 @@
 <li>Ettore Berardi (<a href="https://github.com/ettomatic">@ettomatic</a>): Contributor</li>
 <li>Samuel Richardson (<a href="https://github.com/Rodeoclash">@Rodeoclash</a>): Contributor</li>
 <li>Nikita Vasiliev (<a href="https://github.com/sharpyfox">@sharpyfox</a>): Contributor</li>
-<li>Dirk Breuer (<a href="https://github.com/railsbros-dirk">@railsbros-dirk</a>)): Contributor</li>
+<li>Dirk Breuer (<a href="https://github.com/railsbros-dirk">@railsbros-dirk</a>): Contributor</li>
+<li>Mike Williamson (<a href="https://github.com/sleepycat">@sleepycat</a>): Contributor</li>
+<li>Ujjwal Thaakar (<a href="https://github.com/ujjwalt">@ujjwalt</a>): Contributor</li>
+<li>René Föhring (<a href="https://github.com/rrrene">@rrrene</a>): Contributor</li>
 </ul>
       </section>
     </div>
