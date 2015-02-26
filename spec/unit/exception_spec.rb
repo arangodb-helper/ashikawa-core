@@ -19,9 +19,14 @@ describe Ashikawa::Core::NoCollectionProvidedException do
 end
 
 describe Ashikawa::Core::ClientError do
-  let(:error_message) { 'The client did not do what it should do' }
-  subject { Ashikawa::Core::ClientError.new(error_message) }
-  its(:to_s) { should be(error_message) }
+  subject { Ashikawa::Core::ClientError.new }
+  its(:to_s) { should eq('400 Bad Request') }
+
+  context 'with custom message' do
+    let(:error_message) { 'The client did not do what it should do' }
+    subject { Ashikawa::Core::ClientError.new(error_message) }
+    its(:to_s) { should eq(error_message) }
+  end
 end
 
 describe Ashikawa::Core::BadSyntax do

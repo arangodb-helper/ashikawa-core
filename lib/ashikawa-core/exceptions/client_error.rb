@@ -5,19 +5,19 @@ module Ashikawa
     class ClientError < RuntimeError
       # Create a new instance
       #
-      # @param [Fixnum] status_code
+      # @param [String] message The error message
       # @return RuntimeError
       # @api private
-      def initialize(status_code)
-        @status_code = status_code
+      def initialize(message = nil)
+        super(message || default_error_message)
       end
 
-      # String representation of the exception
+      # The default error message to be used. Can be overridden by sub classed
       #
-      # @return String
+      # @return String the default error message
       # @api private
-      def to_s
-        @status_code
+      def default_error_message
+        '400 Bad Request'
       end
     end
   end

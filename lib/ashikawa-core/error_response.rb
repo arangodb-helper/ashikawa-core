@@ -7,6 +7,7 @@ require 'ashikawa-core/exceptions/client_error/resource_not_found/collection_not
 require 'ashikawa-core/exceptions/client_error/resource_not_found/graph_not_found'
 require 'ashikawa-core/exceptions/client_error/bad_syntax'
 require 'ashikawa-core/exceptions/client_error/authentication_failed'
+require 'ashikawa-core/exceptions/client_error/vertex_collection_already_present'
 require 'ashikawa-core/exceptions/server_error'
 require 'ashikawa-core/exceptions/server_error/json_error'
 
@@ -41,7 +42,7 @@ module Ashikawa
       # @raise [ServerError] If the status code is any of the 5XX codes
       # @return nil
       def on_complete(env)
-        @body = env[:body]
+        @body = env[:body] || {}
         @url = env[:url]
 
         case env[:status]
@@ -103,7 +104,7 @@ module Ashikawa
               when %r{\A(/_db/[^/]+)?/_api/index} then IndexNotFoundException
               when %r{\A(/_db/[^/]+)?/_api/gharial} then resource_not_found_in_graph_scope
               else ResourceNotFound
-        end
+              end, error
       end
 
       # Raise fitting ResourceNotFoundException within the Graph module
@@ -116,8 +117,10 @@ module Ashikawa
               when 'graph not found' then GraphNotFoundException
               when 'collection not found' then CollectionNotFoundException
               when 'document not found' then DocumentNotFoundException
+              when 'collection used in orphans' then VertexCollectionAlreadyPresent
+              when 'collection used in edge def' then VertexCollectionAlreadyPresent
               else ResourceNotFound
-              end
+              end, error
       end
 
       # Read the error message for the request
@@ -126,7 +129,7 @@ module Ashikawa
       # @return [String] The formatted error message
       # @api private
       def error
-        "#{@body['errorNum']}: #{@body['errorMessage']}"
+        @body.empty? ? nil : "#{@body['errorNum']}: #{@body['errorMessage']}"
       end
     end
 

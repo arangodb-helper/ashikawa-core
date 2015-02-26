@@ -10,7 +10,8 @@ ClassVariable:
   exclude: []
 ControlParameter:
   enabled: true
-  exclude: []
+  exclude:
+  - Ashikawa::Core::ClientError#initialize
 DataClump:
   enabled: true
   exclude: []
