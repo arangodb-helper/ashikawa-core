@@ -176,11 +176,33 @@ module Ashikawa
 
       # Adds an edge definition to this Graph
       #
+      # If the edge definition doesn't exist it will be created, else it will just return the edge
+      # collection.
+      #
       # @param [Symbol] collection_name The name of the resulting edge collection
       # @param [Hash] directions The specification between which vertices the edges should be created
       # @option [Array<Symbol>] :from A list of collections names from which the edge directs
       # @option [Array<Symbol>] :to A list of collections names to which the edge directs
+      # @see Graph@add_edge_definition! if you need to know the edge definition was already present
+      # @return [EdgeCollection] The edge collection used be the definition
       def add_edge_definition(collection_name, directions)
+        add_edge_definition!(collection_name, directions)
+      rescue Ashikawa::Core::EdgeCollectionAlreadyPresent
+        edge_collection(collection_name)
+      end
+
+      # Adds an edge definition to this Graph
+      #
+      # If the edge definition doesn't exist it will be created, else it will raise an error.
+      #
+      # @param [Symbol] collection_name The name of the resulting edge collection
+      # @param [Hash] directions The specification between which vertices the edges should be created
+      # @option [Array<Symbol>] :from A list of collections names from which the edge directs
+      # @option [Array<Symbol>] :to A list of collections names to which the edge directs
+      # @raise Ashikawa::Core::EdgeCollectionAlreadyPresent if the edge definition is already defined
+      # @see Graph#add_edge_definition if you need an idempotent version of this
+      # @return [EdgeCollection] The edge collection used be the definition
+      def add_edge_definition!(collection_name, directions)
         create_options = {
           collection: collection_name,
           from:       directions[:from],

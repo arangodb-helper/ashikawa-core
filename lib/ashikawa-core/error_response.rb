@@ -8,6 +8,7 @@ require 'ashikawa-core/exceptions/client_error/resource_not_found/graph_not_foun
 require 'ashikawa-core/exceptions/client_error/bad_syntax'
 require 'ashikawa-core/exceptions/client_error/authentication_failed'
 require 'ashikawa-core/exceptions/client_error/vertex_collection_already_present'
+require 'ashikawa-core/exceptions/client_error/edge_collection_already_present'
 require 'ashikawa-core/exceptions/server_error'
 require 'ashikawa-core/exceptions/server_error/json_error'
 
@@ -119,6 +120,8 @@ module Ashikawa
               when 'document not found' then DocumentNotFoundException
               when 'collection used in orphans' then VertexCollectionAlreadyPresent
               when 'collection used in edge def' then VertexCollectionAlreadyPresent
+              when 'multi use of edge collection in edge def' then EdgeCollectionAlreadyPresent
+              when 'edge collection already used in edge def' then EdgeCollectionAlreadyPresent
               else ResourceNotFound
               end, error
       end
