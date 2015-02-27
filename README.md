@@ -10,11 +10,11 @@
 | Gem Version     | [![Gem Version](http://img.shields.io/gem/v/ashikawa-core.svg)](http://rubygems.org/gems/ashikawa-core)
 | Dependencies    | [![Dependency Status](http://img.shields.io/gemnasium/triAGENS/ashikawa-core.svg)](https://gemnasium.com/triAGENS/ashikawa-core)
 
-Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version **2.2**.
+Ashikawa Core is a Wrapper around the ArangoDB Rest API. It provides low level access and is intended to be used in ArangoDB ODMs and other projects related to the database. It is always working with the stable version of ArangoDB, this is currently version **2.4**.
 
 All tests run on Travis CI for the following versions of Ruby:
 
-* MRI 1.9.3, 2.0.0 and 2.1.2
+* MRI 1.9.3, 2.1.5 and 2.2.0
 * JRuby 1.7.12
 
 ## How to install it?
