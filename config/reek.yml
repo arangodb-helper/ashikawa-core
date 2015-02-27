@@ -10,7 +10,8 @@ ClassVariable:
   exclude: []
 ControlParameter:
   enabled: true
-  exclude: []
+  exclude:
+  - Ashikawa::Core::ClientError#initialize
 DataClump:
   enabled: true
   exclude: []
@@ -68,6 +69,7 @@ TooManyStatements:
   - Ashikawa::Core::FaradayFactory#faraday_for
   - Ashikawa::Core::ErrorResponse#on_complete
   - Ashikawa::Core::Figure#initialize
+  - Ashikawa::Core::ErrorResponse#resource_not_found_in_graph_scope
   max_statements: 6
 UncommunicativeMethodName:
   enabled: true

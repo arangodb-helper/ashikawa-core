@@ -6,20 +6,12 @@ module Ashikawa
     # This Exception is thrown when you request
     # a resource that does not exist on the server
     class ResourceNotFound < ClientError
-      # Create a new instance
-      #
-      # @return RuntimeError
-      # @api private
-      def initialize
-        super(404)
-      end
-
-      # String representation of the exception
+      # The default message for this error.
       #
       # @return String
       # @api private
-      def to_s
-        'Status 404: The Resource you requested was not found on the server'
+      def default_error_message
+        'The Resource you requested was not found on the server'
       end
     end
   end

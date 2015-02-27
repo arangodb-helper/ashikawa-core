@@ -3,6 +3,8 @@ require 'unit/spec_helper'
 require 'ashikawa-core/graph'
 require 'ashikawa-core/document'
 require 'ashikawa-core/database'
+require 'ashikawa-core/exceptions/client_error/vertex_collection_already_present'
+require 'ashikawa-core/exceptions/client_error/edge_collection_already_present'
 
 describe Ashikawa::Core::Graph do
   let(:database) { instance_double('Ashikawa::Core::Database') }
@@ -184,6 +186,22 @@ describe Ashikawa::Core::Graph do
         it 'should return the newly created collection' do
           expect(subject.add_vertex_collection('books')).to eq new_vertex_collection
         end
+
+        context 'with an already present collection' do
+          before do
+            allow(database).to receive(:send_request)
+                                .with('gharial/my_graph/vertex', post: { collection: 'books' })
+                                .and_raise(Ashikawa::Core::VertexCollectionAlreadyPresent)
+          end
+
+          it 'should just return the vertex collection' do
+            expect(subject.add_vertex_collection('books')).to eq new_vertex_collection
+          end
+
+          it 'should re-raise the exception when called with a bang!' do
+            expect { subject.add_vertex_collection!('books') }.to raise_error(Ashikawa::Core::VertexCollectionAlreadyPresent)
+          end
+        end
       end
     end
 
@@ -263,6 +281,22 @@ describe Ashikawa::Core::Graph do
 
         it 'should return the edge collection' do
           expect(subject.add_edge_definition(:authorship, from: [:author], to: [:books])).to eq new_edge_collection
+        end
+
+        context 'with an edge collection of the same name' do
+          before do
+            allow(database).to receive(:send_request)
+                                .with('gharial/my_graph/edge', post: { collection: :authorship, from: [:author], to: [:books] })
+                                .and_raise(Ashikawa::Core::EdgeCollectionAlreadyPresent)
+          end
+
+          it 'should just return the edge collection' do
+            expect(subject.add_edge_definition(:authorship, from: [:author], to: [:books])).to eq new_edge_collection
+          end
+
+          it 'should re-raise the exception when called with a bang!' do
+            expect { subject.add_edge_definition!(:authorship, from: [:author], to: [:books]) }.to raise_error(Ashikawa::Core::EdgeCollectionAlreadyPresent)
+          end
         end
       end
     end

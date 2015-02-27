@@ -58,6 +58,14 @@ describe 'Graphs' do
     expect(subject.edge_collections).to include visited
   end
 
+  it 'adding the same vertex collection should be idempotent' do
+    expect { subject.add_vertex_collection(:ponies) }.not_to raise_error
+  end
+
+  it 'adding the same edge definition should be idempotent' do
+    expect { subject.add_edge_definition(:friends_with, from: [:you], to: [:me]) }.not_to raise_error
+  end
+
   context 'connected vertices' do
     before :each do
       # There are only directed graphs
