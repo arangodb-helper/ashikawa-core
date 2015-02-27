@@ -1,3 +1,13 @@
+# Version 0.14.0
+
+**Codename: Armstrong**
+
+* Making `add_vertex_collection` and `add_edge_definition` idempotent (#144, #139)
+* Introduced `add_vertex_collection!` and `add_edge_definition!` which will raise errors
+* Making error messages and error numbers from ArangoDB more visible in exceptions (#136)
+* Small improvements to the docuemtation
+* Running against Ruby 2.2.0 now
+
 # Version 0.13.1
 
 * **Important Bugfix: Please update immediately**
