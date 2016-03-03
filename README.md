@@ -1,5 +1,7 @@
 # Ashikawa Core
 
+**This gem is not maintained. If you want to take over the project, please contact info@arangodb.com**
+
 | Project         | Ashikawa::Core
 |:----------------|:--------------------------------------------------
 | Homepage        | http://triagens.github.io/ashikawa-core/
